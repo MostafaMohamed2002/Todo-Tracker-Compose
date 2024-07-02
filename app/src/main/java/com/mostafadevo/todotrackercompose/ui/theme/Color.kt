@@ -1,4 +1,5 @@
 package com.mostafadevo.todotrackercompose.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF8F4C38)
@@ -217,7 +218,10 @@ val surfaceContainerDarkHighContrast = Color(0xFF271D1B)
 val surfaceContainerHighDarkHighContrast = Color(0xFF322825)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF3D322F)
 
-
+val priorityHigh = androidx.compose.ui.graphics.Color(0xFFFF0000)
+val priorityMedium = androidx.compose.ui.graphics.Color(0xFFFFFF00)
+val priorityLow = androidx.compose.ui.graphics.Color(0xFF008000)
+val priorityUnspecified = androidx.compose.ui.graphics.Color(0xFF808080)
 
 
 
