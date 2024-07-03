@@ -1,11 +1,8 @@
 package com.mostafadevo.todotrackercompose.ui.components
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,18 +19,24 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoTopAppBar(
-    screen: String
+    screen: String,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    onSortByTitle: () -> Unit,
+    onSortByPriority: () -> Unit
 ) {
     TopAppBar(
         title = {
-            when(screen){
+            when (screen) {
                 "Home" -> {
                     Text(text = screen, modifier = Modifier.padding(8.dp))
                 }
+
                 "Add" -> {
                     Text(text = screen, modifier = Modifier.padding(8.dp))
                 }
-                "Update"-> {
+
+                "Update" -> {
                     Text(text = screen, modifier = Modifier.padding(8.dp))
                 }
             }
@@ -44,22 +47,21 @@ fun TodoTopAppBar(
                 "Home" -> {
                     Icon(
                         imageVector = Icons.Rounded.Home,
-                        contentDescription = "home"
-                        , modifier = Modifier.padding(8.dp)
+                        contentDescription = "home", modifier = Modifier.padding(8.dp)
                     )
                 }
+
                 "Add" -> {
                     Icon(
                         imageVector = Icons.Rounded.Add,
-                        contentDescription = "add"
-                        , modifier = Modifier.padding(8.dp)
+                        contentDescription = "add", modifier = Modifier.padding(8.dp)
                     )
                 }
-                "Update"->{
+
+                "Update" -> {
                     Icon(
                         imageVector = Icons.Rounded.Edit,
-                        contentDescription = "update"
-                        , modifier = Modifier.padding(8.dp)
+                        contentDescription = "update", modifier = Modifier.padding(8.dp)
                     )
                 }
             }
@@ -68,14 +70,22 @@ fun TodoTopAppBar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-        )
+        ), actions = {
+            when (screen) {
+                "Home" -> {
+                    HomeOverFlowMenu(
+                        expanded = expanded,
+                        onExpandedChange = { onExpandedChange(it) },
+                        onSortByTitle = { onSortByTitle() },
+                        onSortByPriority = { onSortByPriority() })
+                }
+            }
+        }
     )
 }
 
 @Preview
 @Composable
 private fun PreviewTodoTopAppBar() {
-    TodoTopAppBar(
-        screen = "update"
-    )
+
 }

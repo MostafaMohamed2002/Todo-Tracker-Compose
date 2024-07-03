@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -32,7 +29,9 @@ import java.util.Date
 
 @Composable
 fun TodoItem(
-    todo: Todo, onCheckedChange: (Boolean) -> Unit
+    modifier: Modifier = Modifier,
+    todo: Todo,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     OutlinedCard(
         modifier = Modifier
