@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ITodoDao {
     @Query("SELECT * FROM TODOS")
-    fun getTodoItems(): Flow<List<TodoEntity>>
+    fun getTodoItems(): Flow<List<Todo>>
 
     @Query("SELECT * FROM TODOS WHERE id = :id")
-    suspend fun getTodoById(id: Int): TodoEntity
+    suspend fun getTodoById(id: Int): Todo
 
     @Upsert
-    suspend fun upsertTodo(todo: TodoEntity)
+    suspend fun upsertTodo(todo: Todo)
 
     @Delete
-    suspend fun deleteTodo(todo: TodoEntity)
+    suspend fun deleteTodo(todo: Todo)
 }

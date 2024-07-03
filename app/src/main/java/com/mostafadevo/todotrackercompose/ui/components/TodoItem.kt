@@ -1,6 +1,5 @@
 package com.mostafadevo.todotrackercompose.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,8 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -21,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mostafadevo.todotrackercompose.data.local.Priority
-import com.mostafadevo.todotrackercompose.data.local.TodoEntity
+import com.mostafadevo.todotrackercompose.data.local.Todo
 import com.mostafadevo.todotrackercompose.ui.theme.priorityHigh
 import com.mostafadevo.todotrackercompose.ui.theme.priorityLow
 import com.mostafadevo.todotrackercompose.ui.theme.priorityMedium
@@ -31,15 +32,14 @@ import java.util.Date
 
 @Composable
 fun TodoItem(
-    todo: TodoEntity, onCheckedChange: (Boolean) -> Unit
+    todo: Todo, onCheckedChange: (Boolean) -> Unit
 ) {
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-        ,
+            .padding(16.dp),
 
-    ) {
+        ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -96,7 +96,7 @@ fun TodoItem(
 @Composable
 private fun TodoItemPreview() {
     TodoItem(
-        todo = TodoEntity(
+        todo = Todo(
             id = 1,
             title = "title",
             description = "this the description",
