@@ -2,6 +2,7 @@ package com.mostafadevo.todotrackercompose.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeOverFlowMenu(
@@ -49,17 +51,25 @@ fun HomeOverFlowMenu(
         ) {
             DropdownMenuItem(
                 leadingIcon = {
-                    Icon(imageVector = rememberTitle(), contentDescription = "title")
+                    Icon(
+                        imageVector = rememberTitle(),
+                        contentDescription = "title",
+                        modifier = Modifier.size(16.dp)
+                    )
                 },
                 onClick = { onSortByTitle() },
-                text = { Text("Title") }
+                text = { Text("Title", fontSize = 16.sp) }
             )
             DropdownMenuItem(
                 leadingIcon = {
-                    Icon(imageVector = rememberPriorityHigh(), contentDescription = "priorityicon")
+                    Icon(
+                        imageVector = rememberPriorityHigh(),
+                        contentDescription = "priorityicon",
+                        modifier = Modifier.size(16.dp)
+                    )
                 },
                 onClick = { onSortByPriority() },
-                text = { Text("Priority") }
+                text = { Text("Priority", fontSize = 16.sp) }
             )
         }
     }
