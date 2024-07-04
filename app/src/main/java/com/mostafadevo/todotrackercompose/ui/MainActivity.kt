@@ -21,8 +21,8 @@ class MainActivity : ComponentActivity() {
         Timber.d("onCreate")
         setContent {
             AppTheme(
-                darkTheme = true,
-                dynamicColor = true
+                darkTheme = false,
+                dynamicColor = false
             ) {
                 HomeScreen()
             }

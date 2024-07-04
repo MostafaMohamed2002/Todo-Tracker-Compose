@@ -6,5 +6,7 @@ sealed class HomeScreenUiEvent {
     data class ToggleSortingMenu(val isMenuExpaneded: Boolean) : HomeScreenUiEvent()
     data class SortTodos(val sortingOption: SortingOptions) : HomeScreenUiEvent()
     object AddTodo : HomeScreenUiEvent()
-    data class onCheckTodo(val todo: Todo, val isComplete: Boolean) : HomeScreenUiEvent()
+    data class onCheckTodo(val currentTodo: Todo, val isComplete: Boolean) : HomeScreenUiEvent()
+
+    data class SelectSegment(val selctedSegment: Int) : HomeScreenUiEvent()
 }

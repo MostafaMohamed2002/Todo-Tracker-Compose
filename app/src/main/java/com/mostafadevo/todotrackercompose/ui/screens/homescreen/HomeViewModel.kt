@@ -2,68 +2,120 @@ package com.mostafadevo.todotrackercompose.ui.screens.homescreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mostafadevo.todotrackercompose.domain.usecase.AddTodoUseCase
-import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosSortedByPriorityUseCase
-import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosSortedByTitleUseCase
 import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCase
 import com.mostafadevo.todotrackercompose.domain.usecase.UpdateTodoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getAllTodosUseCase: GetAllTodosUseCase,
-    private val getAllTodosSortedByTitleUseCase: GetAllTodosSortedByTitleUseCase,
-    private val getAllTodosSortedByPriorityUseCase: GetAllTodosSortedByPriorityUseCase,
-    private val addTodoUseCase: AddTodoUseCase, private val updateTodoUseCase: UpdateTodoUseCase
+    private val updateTodoUseCase: UpdateTodoUseCase
 
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<HomeScreenSUitate> =
         MutableStateFlow(HomeScreenSUitate())
-    val uiState = _uiState.asStateFlow()
+    val uiState = _uiState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = HomeScreenSUitate()
+    )
+
+
+    private val _uiEvent = Channel<HomeScreenUiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    private val debouncePeriod = 50L // 50 milliseconds debounce period
 
     init {
         loadTodos()
     }
 
+    @OptIn(FlowPreview::class)
     private fun loadTodos() {
         viewModelScope.launch {
-            getAllTodosUseCase().collect { todos ->
-                _uiState.value = _uiState.value.copy(
-                    todos = todos
-                )
+            _uiState.debounce(debouncePeriod).collectLatest { state ->
+                Timber.d("UI state is $state")
+                val todosFlow = when (state.selectedSegmentIndex) {
+                    0 -> {
+                        when (state.sortingOption) {
+                            SortingOptions.BY_TITLE -> {
+                                getAllTodosUseCase(
+                                    showCompleted = state.selectedSegmentIndex,
+                                    sortingOptions = state.sortingOption
+                                )
+                            }
+
+                            SortingOptions.BY_PRIORITY -> {
+                                getAllTodosUseCase(
+                                    showCompleted = state.selectedSegmentIndex,
+                                    sortingOptions = state.sortingOption
+                                )
+                            }
+                        }
+                    }
+
+                    1 -> {
+                        when (state.sortingOption) {
+                            SortingOptions.BY_TITLE -> {
+                                getAllTodosUseCase(
+                                    showCompleted = state.selectedSegmentIndex,
+                                    sortingOptions = state.sortingOption
+                                )
+                            }
+
+                            SortingOptions.BY_PRIORITY -> {
+                                getAllTodosUseCase(
+                                    showCompleted = state.selectedSegmentIndex,
+                                    sortingOptions = state.sortingOption
+                                )
+                            }
+                        }
+                    }
+
+                    else -> {
+                        throw IllegalStateException("Invalid segment index")
+                    }
+                }
+                todosFlow.collectLatest { todos ->
+                    Timber.d("Loading todos: ${todos.map { it.title }}")
+                    _uiState.value = state.copy(todos = todos)
+                }
             }
         }
     }
 
     fun onEvent(event: HomeScreenUiEvent) {
         when (event) {
-            HomeScreenUiEvent.AddTodo -> TODO()
+            HomeScreenUiEvent.AddTodo -> {
+                viewModelScope.launch {
+                    _uiEvent.send(HomeScreenUiEvent.AddTodo)
+                }
+            }
+
             is HomeScreenUiEvent.SortTodos -> {
                 when (event.sortingOption) {
                     SortingOptions.BY_TITLE -> {
-                        viewModelScope.launch {
-                            getAllTodosSortedByTitleUseCase().collect {
-                                _uiState.value = _uiState.value.copy(
-                                    todos = it,
-                                    isMenuExpanded = false
-                                )
-                            }
-                        }
+                        _uiState.value = _uiState.value.copy(
+                            sortingOption = SortingOptions.BY_TITLE
+                        )
                     }
 
                     SortingOptions.BY_PRIORITY -> {
-                        viewModelScope.launch {
-                            getAllTodosSortedByPriorityUseCase().collect {
-                                _uiState.value = _uiState.value.copy(
-                                    todos = it,
-                                    isMenuExpanded = false
-                                )
-                            }
-                        }
+                        _uiState.value = _uiState.value.copy(
+                            sortingOption = SortingOptions.BY_PRIORITY
+                        )
                     }
                 }
             }
@@ -75,8 +127,27 @@ class HomeViewModel @Inject constructor(
             }
 
             is HomeScreenUiEvent.onCheckTodo -> {
-                viewModelScope.launch {
-                    updateTodoUseCase(event.todo.copy(isCompleted = event.isComplete))
+                viewModelScope.launch(Dispatchers.IO) {
+                    viewModelScope.launch {
+                        updateTodoUseCase(event.currentTodo.copy(isCompleted = event.isComplete))
+                    }
+                }
+            }
+
+            is HomeScreenUiEvent.SelectSegment -> {
+                when (event.selctedSegment) {
+                    0 /*0 mean selected to-do*/ -> {
+                        _uiState.value = _uiState.value.copy(
+                            selectedSegmentIndex = 0
+                        )
+                    }
+
+                    1/*1 mens selected done*/ -> {
+                        _uiState.value = _uiState.value.copy(
+                            selectedSegmentIndex = 1
+                        )
+                    }
+
                 }
             }
         }

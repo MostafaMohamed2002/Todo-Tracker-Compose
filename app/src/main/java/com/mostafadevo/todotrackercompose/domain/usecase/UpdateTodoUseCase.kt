@@ -7,7 +7,7 @@ import javax.inject.Inject
 class UpdateTodoUseCase @Inject constructor(
     private val iTodoRepository: ITodoRepository
 ) {
-    operator suspend fun invoke(todo: Todo) {
+    suspend operator fun invoke(todo: Todo) {
         iTodoRepository.upsertTodo(todo)
     }
 }

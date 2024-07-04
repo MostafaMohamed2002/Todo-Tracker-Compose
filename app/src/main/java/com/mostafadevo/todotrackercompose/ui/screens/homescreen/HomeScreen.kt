@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,13 +39,15 @@ import com.mostafadevo.todotrackercompose.ui.theme.priorityMedium
 import com.mostafadevo.todotrackercompose.ui.theme.priorityUnspecified
 import java.util.Date
 
-@OptIn(ExperimentalFoundationApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun HomeScreen(
     mViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uistate by mViewModel.uiState.collectAsState()
+    LaunchedEffect(key1 = uistate.todos) {
+    }
     Scaffold(
         floatingActionButton = {
             AddTodoFloatingActionButton(onClick = {
@@ -63,12 +70,36 @@ fun HomeScreen(
                 })
         }
     ) { paddingValues ->
+        val options = listOf("To-Do", "Done")
+
 
         LazyColumn(
             modifier = Modifier.padding(paddingValues)
         ) {
+            item {
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    options.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            selected = index == uistate.selectedSegmentIndex,
+                            onClick = {
+                                mViewModel.onEvent(HomeScreenUiEvent.SelectSegment(selctedSegment = index))
+                            },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = options.size
+                            )
+                        ) {
+                            Text(text = "$label")
+                        }
+                    }
+                }
+            }
             items(items = uistate.todos, key = { it.id }) { todo ->
-                OutlinedCard(
+                ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -128,5 +159,7 @@ fun HomeScreen(
                 }
             }
         }
+
+
     }
 }
