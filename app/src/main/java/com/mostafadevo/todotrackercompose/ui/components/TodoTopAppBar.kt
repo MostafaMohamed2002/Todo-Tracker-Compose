@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoTopAppBar(
+    scrollBehavior: TopAppBarScrollBehavior,
     screen: String,
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
@@ -26,6 +28,7 @@ fun TodoTopAppBar(
     onSortByPriority: () -> Unit
 ) {
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         title = {
             when (screen) {
                 "Home" -> {
@@ -69,7 +72,8 @@ fun TodoTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
             containerColor = MaterialTheme.colorScheme.primary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
         ), actions = {
             when (screen) {
                 "Home" -> {

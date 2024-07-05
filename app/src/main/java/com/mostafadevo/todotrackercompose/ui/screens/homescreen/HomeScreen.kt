@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,12 +21,16 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,18 +51,21 @@ fun HomeScreen(
     mViewModel: HomeViewModel = hiltViewModel()
 ) {
     val uistate by mViewModel.uiState.collectAsState()
-    LaunchedEffect(key1 = uistate.todos) {
-    }
+    val lazyColumnState = rememberLazyListState()
+    val isScrolledDown by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0 } }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             AddTodoFloatingActionButton(onClick = {
                 mViewModel.onEvent(
                     HomeScreenUiEvent.AddTodo
                 )
-            })
+            }, expanded = !isScrolledDown)
         },
         topBar = {
             TodoTopAppBar(
+                scrollBehavior = scrollBehavior,
                 screen = "Home",
                 expanded = uistate.isMenuExpanded,
                 onExpandedChange = {
@@ -74,7 +82,8 @@ fun HomeScreen(
 
 
         LazyColumn(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            state = lazyColumnState
         ) {
             item {
                 SingleChoiceSegmentedButtonRow(
@@ -90,7 +99,7 @@ fun HomeScreen(
                             },
                             shape = SegmentedButtonDefaults.itemShape(
                                 index = index,
-                                count = options.size
+                                count = options.size,
                             )
                         ) {
                             Text(text = "$label")
