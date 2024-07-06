@@ -76,7 +76,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     //timber
-    implementation (libs.timber)
+    implementation(libs.timber)
     //room db
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -91,7 +91,10 @@ dependencies {
     //lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     //compose live data
-    implementation (libs.androidx.runtime.livedata)
+    implementation(libs.androidx.runtime.livedata)
+    //material beta
+    implementation(libs.material3)
+
 }
 ksp {
     arg("dagger.incremental", "true")

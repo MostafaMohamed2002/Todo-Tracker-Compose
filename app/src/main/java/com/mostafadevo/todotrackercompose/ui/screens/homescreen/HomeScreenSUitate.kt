@@ -6,7 +6,8 @@ data class HomeScreenSUitate(
     val todos: List<Todo> = emptyList(),
     val sortingOption: SortingOptions = SortingOptions.BY_TITLE,
     val isMenuExpanded: Boolean = false,
-    val selectedSegmentIndex: Int = 0 // 0 mean SegmentOptions.to-do
+    val selectedSegmentIndex: Int = 0, // 0 mean SegmentOptions.to-do
+    val isAddTodoDialogOpen: Boolean = false
 )
 
 enum class SortingOptions {

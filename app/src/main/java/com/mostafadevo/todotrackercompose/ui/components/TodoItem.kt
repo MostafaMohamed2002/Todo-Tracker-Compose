@@ -101,7 +101,8 @@ private fun TodoItemPreview() {
             description = "this the description",
             priority = Priority.HIGH,
             dueDateTime = 1719886642580,
-            isCompleted = false
+            isCompleted = false,
+            isAlarmEnabled = false
         ), onCheckedChange = {}
     )
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Todo Tracker Compose</string>
+    <string name="time_picker_title">Select Time :</string>
+    <string name="common_button_cancel">Cancel</string>
+    <string name="common_button_ok">Ok</string>
+    <string name="time_picker_button_select_picker_mode">select picker mode</string>
+    <string name="time_picker_button_select_input_mode">select input mode</string>
 </resources>

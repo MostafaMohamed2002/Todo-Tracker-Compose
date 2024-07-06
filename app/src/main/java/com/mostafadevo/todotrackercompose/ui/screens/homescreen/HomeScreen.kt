@@ -38,6 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionButton
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
+import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddDialog
+import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddTodoDialogUiEvents
 import com.mostafadevo.todotrackercompose.ui.theme.priorityHigh
 import com.mostafadevo.todotrackercompose.ui.theme.priorityLow
 import com.mostafadevo.todotrackercompose.ui.theme.priorityMedium
@@ -50,16 +52,19 @@ import java.util.Date
 fun HomeScreen(
     mViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uistate by mViewModel.uiState.collectAsState()
+    val uistate by mViewModel.homeUiState.collectAsState()
+    val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
     val lazyColumnState = rememberLazyListState()
     val isScrolledDown by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0 } }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             AddTodoFloatingActionButton(onClick = {
                 mViewModel.onEvent(
-                    HomeScreenUiEvent.AddTodo
+                    HomeScreenUiEvent.AddTodoButton
                 )
             }, expanded = !isScrolledDown)
         },
@@ -79,8 +84,40 @@ fun HomeScreen(
         }
     ) { paddingValues ->
         val options = listOf("To-Do", "Done")
+        if (uistate.isAddTodoDialogOpen) {
+            AddDialog(
+                title = addTodoDialogUiState.title,
+                description = addTodoDialogUiState.description,
+                priority = addTodoDialogUiState.priority,
+                time = addTodoDialogUiState.time,
+                date = addTodoDialogUiState.date,
+                onTitleChange = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnTitleChange(it))
+                },
+                onDescriptionChange = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnDescriptionChange(it))
+                },
+                onPriorityChange = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnPriorityChange(it))
+                },
+                onTimeChange = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnTimeChange(it))
+                },
+                onDateChange = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnDateChange(it))
+                },
+                onDismissRequest = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.Close)
+                },
+                onSaveTodo = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.AddTodo)
+                },
+                isAlarmEnabled = addTodoDialogUiState.isAlarmEnabled, onIsAlarmChanged = {
+                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnSetAlarmChange(it))
+                }
 
-
+            )
+        }
         LazyColumn(
             modifier = Modifier.padding(paddingValues),
             state = lazyColumnState

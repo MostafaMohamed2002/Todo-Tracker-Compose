@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme(
                 darkTheme = false,
-                dynamicColor = false
+                dynamicColor = true
             ) {
                 HomeScreen()
             }

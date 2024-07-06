@@ -10,6 +10,7 @@ data class Todo(
     val description: String?,
     val priority: Priority,
     val isCompleted: Boolean,
+    val isAlarmEnabled: Boolean,
     val dueDateTime: Long,
 )
 
