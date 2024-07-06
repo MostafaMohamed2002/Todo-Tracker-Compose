@@ -149,7 +149,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .animateItemPlacement()
+                        .animateItem()
 
 
                 ) {
