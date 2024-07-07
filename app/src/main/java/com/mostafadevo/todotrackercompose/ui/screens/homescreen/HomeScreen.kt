@@ -2,6 +2,7 @@ package com.mostafadevo.todotrackercompose.ui.screens.homescreen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -40,11 +40,12 @@ import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionBut
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddDialog
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddTodoDialogUiEvents
+import com.mostafadevo.todotrackercompose.ui.screens.homescreen.todoDetailes.TodoDetailesBottomSheet
 import com.mostafadevo.todotrackercompose.ui.theme.priorityHigh
 import com.mostafadevo.todotrackercompose.ui.theme.priorityLow
 import com.mostafadevo.todotrackercompose.ui.theme.priorityMedium
 import com.mostafadevo.todotrackercompose.ui.theme.priorityUnspecified
-import java.util.Date
+import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
@@ -52,8 +53,9 @@ import java.util.Date
 fun HomeScreen(
     mViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uistate by mViewModel.homeUiState.collectAsState()
+    val uiState by mViewModel.homeUiState.collectAsState()
     val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
+    val todoDetailesBottomSheetUiState by mViewModel.todoDetailesBottomSheetUiState.collectAsState()
     val lazyColumnState = rememberLazyListState()
     val isScrolledDown by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0 } }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -72,7 +74,7 @@ fun HomeScreen(
             TodoTopAppBar(
                 scrollBehavior = scrollBehavior,
                 screen = "Home",
-                expanded = uistate.isMenuExpanded,
+                expanded = uiState.isMenuExpanded,
                 onExpandedChange = {
                     mViewModel.onEvent(HomeScreenUiEvent.ToggleSortingMenu(it))
                 },
@@ -84,7 +86,7 @@ fun HomeScreen(
         }
     ) { paddingValues ->
         val options = listOf("To-Do", "Done")
-        if (uistate.isAddTodoDialogOpen) {
+        if (uiState.isAddTodoDialogOpen) {
             AddDialog(
                 title = addTodoDialogUiState.title,
                 description = addTodoDialogUiState.description,
@@ -130,7 +132,7 @@ fun HomeScreen(
                 ) {
                     options.forEachIndexed { index, label ->
                         SegmentedButton(
-                            selected = index == uistate.selectedSegmentIndex,
+                            selected = index == uiState.selectedSegmentIndex,
                             onClick = {
                                 mViewModel.onEvent(HomeScreenUiEvent.SelectSegment(selctedSegment = index))
                             },
@@ -144,12 +146,16 @@ fun HomeScreen(
                     }
                 }
             }
-            items(items = uistate.todos, key = { it.id }) { todo ->
+            items(items = uiState.todos, key = { it.id }) { todo ->
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .animateItem()
+                        .clickable {
+                            Timber.d("Clicked on todo item: ${todo.id}")
+                            mViewModel.onEvent(HomeScreenUiEvent.onTodoClick(todo))
+                        }
 
 
                 ) {
@@ -168,10 +174,6 @@ fun HomeScreen(
                                 maxLines = 1
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            if (todo.description != null) {
-                                Text(text = todo.description, maxLines = 1)
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
                             Text(
                                 text = "Priority: ${todo.priority}",
                                 color = when (todo.priority) {
@@ -180,11 +182,6 @@ fun HomeScreen(
                                     Priority.LOW -> priorityLow
                                     Priority.UNSPECIFIED -> priorityUnspecified
                                 }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Due: ${Date(todo.dueDateTime)}",
-                                style = MaterialTheme.typography.bodySmall
                             )
                         }
                         Column(
@@ -206,6 +203,16 @@ fun HomeScreen(
             }
         }
 
-
+        if (uiState.isTodoDetailesBottomSheetEnabled) {
+            uiState.currentShownTodo?.let {
+                TodoDetailesBottomSheet(
+                    state = todoDetailesBottomSheetUiState,
+                    onDismiss = {
+                        mViewModel.onEvent(HomeScreenUiEvent.onDismissTodoDetailesBottomSheet)
+                    },
+                    onEvent = mViewModel::onBottomSheetEvent
+                )
+            }
+        }
     }
 }

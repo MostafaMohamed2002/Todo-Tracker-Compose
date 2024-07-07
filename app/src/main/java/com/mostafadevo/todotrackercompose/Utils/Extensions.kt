@@ -42,3 +42,20 @@ fun combineDateAndTime(
     // Convert LocalDateTime to Instant, then to Long
     return localDateTime.atZone(zone).toInstant().toEpochMilli()
 }
+
+// extract the date from the combined value
+fun Long.extractDate(zone: ZoneId = ZoneId.systemDefault()): Long {
+    return Instant.ofEpochMilli(this).atZone(zone).toLocalDate().atStartOfDay(zone).toInstant()
+        .toEpochMilli()
+}
+
+// extract the time from the combined value
+fun Long.extractTime(zone: ZoneId = ZoneId.systemDefault()): LocalTime {
+    return Instant.ofEpochMilli(this).atZone(zone).toLocalTime()
+}
+
+// convert local time to to long
+fun LocalTime.toLong(zone: ZoneId = ZoneId.systemDefault()): Long {
+    val localDate = LocalDateTime.of(1970, 1, 1, this.hour, this.minute)
+    return localDate.atZone(zone).toInstant().toEpochMilli()
+}

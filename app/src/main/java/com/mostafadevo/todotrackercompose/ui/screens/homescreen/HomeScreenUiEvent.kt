@@ -9,4 +9,8 @@ sealed class HomeScreenUiEvent {
     data class onCheckTodo(val currentTodo: Todo, val isComplete: Boolean) : HomeScreenUiEvent()
 
     data class SelectSegment(val selctedSegment: Int) : HomeScreenUiEvent()
+
+    data class onTodoClick(val todo: Todo) : HomeScreenUiEvent()
+
+    object onDismissTodoDetailesBottomSheet : HomeScreenUiEvent()
 }
