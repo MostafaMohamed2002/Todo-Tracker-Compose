@@ -1,6 +1,8 @@
 package com.mostafadevo.todotrackercompose.ui.screens.homescreen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -122,7 +124,15 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .animateItem()
+                        .animateItem(
+                            //customized animations
+                            fadeInSpec = null,
+                            fadeOutSpec = null,
+                            placementSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        )
                         .clickable {
                             Timber.d("Clicked on todo item: ${todo.id}")
                             mViewModel.onEvent(HomeScreenUiEvent.onTodoClick(todo))
