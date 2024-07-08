@@ -298,7 +298,7 @@ class HomeViewModel @Inject constructor(
             TodoDetailesBottomSheetUiEvent.ToggleEditMode -> {
                 // when the user clicks on the edit button, the bottom sheet will be in edit mode if it was not in edit mode save the current task to the database
                 val currentTodo = homeUiState.value.currentShownTodo
-                if (currentTodo != null) {
+                if (currentTodo != null && currentTodo.isCompleted.not()/*don't enable edit mode in done todosz*/) {
                     _todoDetailesBottomSheetUiState.value =
                         _todoDetailesBottomSheetUiState.value.copy(
                             isEditMode = !_todoDetailesBottomSheetUiState.value.isEditMode
