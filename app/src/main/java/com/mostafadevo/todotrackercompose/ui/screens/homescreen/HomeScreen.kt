@@ -39,7 +39,6 @@ import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionButton
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddDialog
-import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddTodoDialogUiEvents
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.todoDetailes.TodoDetailesBottomSheet
 import com.mostafadevo.todotrackercompose.ui.theme.priorityHigh
 import com.mostafadevo.todotrackercompose.ui.theme.priorityLow
@@ -88,36 +87,8 @@ fun HomeScreen(
         val options = listOf("To-Do", "Done")
         if (uiState.isAddTodoDialogOpen) {
             AddDialog(
-                title = addTodoDialogUiState.title,
-                description = addTodoDialogUiState.description,
-                priority = addTodoDialogUiState.priority,
-                time = addTodoDialogUiState.time,
-                date = addTodoDialogUiState.date,
-                onTitleChange = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnTitleChange(it))
-                },
-                onDescriptionChange = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnDescriptionChange(it))
-                },
-                onPriorityChange = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnPriorityChange(it))
-                },
-                onTimeChange = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnTimeChange(it))
-                },
-                onDateChange = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnDateChange(it))
-                },
-                onDismissRequest = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.Close)
-                },
-                onSaveTodo = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.AddTodo)
-                },
-                isAlarmEnabled = addTodoDialogUiState.isAlarmEnabled, onIsAlarmChanged = {
-                    mViewModel.onDialogEvent(AddTodoDialogUiEvents.OnSetAlarmChange(it))
-                }
-
+                state = addTodoDialogUiState,
+                onEvent = mViewModel::onDialogEvent
             )
         }
         LazyColumn(

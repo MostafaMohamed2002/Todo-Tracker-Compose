@@ -43,25 +43,12 @@ import com.mostafadevo.todotrackercompose.Utils.toFormattedDateString
 import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.TimePickerDialog
 import com.mostafadevo.todotrackercompose.ui.components.rememberTimer
-import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddDialog(
-    title: String,
-    description: String,
-    priority: Priority,
-    isAlarmEnabled: Boolean,
-    time: LocalTime,
-    date: Long,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onPriorityChange: (Priority) -> Unit,
-    onIsAlarmChanged: (Boolean) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onDateChange: (Long) -> Unit,
-    onDismissRequest: () -> Unit,
-    onSaveTodo: () -> Unit,
+    state: AddTodoDialogUiState,
+    onEvent: (AddTodoDialogUiEvents) -> Unit
 ) {
     val focusRequester = remember { FocusRequester() } // Initialize FocusRequester
     var showDatePicker by remember { mutableStateOf(false) }
@@ -70,11 +57,11 @@ fun AddDialog(
         mutableStateOf(false)
     }
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = date
+        initialSelectedDateMillis = state.date
     )
 
     Dialog(onDismissRequest = {
-        onDismissRequest()
+        onEvent(AddTodoDialogUiEvents.Close)
     }) {
         Surface(
             shape = MaterialTheme.shapes.large, tonalElevation = 8.dp
@@ -84,9 +71,9 @@ fun AddDialog(
             ) {
                 Text(text = "Add Todo", style = MaterialTheme.typography.bodySmall)
                 OutlinedTextField(
-                    value = title,
+                    value = state.title,
                     onValueChange = {
-                        onTitleChange(it)
+                        onEvent(AddTodoDialogUiEvents.OnTitleChange(it))
                     },
                     label = { Text("Title") },
                     modifier = Modifier
@@ -97,8 +84,10 @@ fun AddDialog(
                     focusRequester.requestFocus() // Request focus during composition
                 }
                 OutlinedTextField(
-                    value = description,
-                    onValueChange = { onDescriptionChange(it) },
+                    value = state.description,
+                    onValueChange = {
+                        onEvent(AddTodoDialogUiEvents.OnDescriptionChange(it))
+                    },
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -111,7 +100,7 @@ fun AddDialog(
                             .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                             .fillMaxWidth(),
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isPriorityMenuExpanded) },
-                        value = priority.name,
+                        value = state.priority.name,
                         onValueChange = {},
                         readOnly = true,
                         singleLine = true,
@@ -123,7 +112,9 @@ fun AddDialog(
                         Priority.entries.forEach {
                             DropdownMenuItem(
                                 text = { Text(text = it.name) },
-                                onClick = { onPriorityChange(it) },
+                                onClick = {
+                                    onEvent(AddTodoDialogUiEvents.OnPriorityChange(it))
+                                },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
 
                             )
@@ -142,13 +133,13 @@ fun AddDialog(
                     Spacer(modifier = Modifier.weight(1f))
                     Switch(
                         modifier = Modifier,
-                        checked = isAlarmEnabled,
-                        onCheckedChange = { onIsAlarmChanged(it) },
+                        checked = state.isAlarmEnabled,
+                        onCheckedChange = { onEvent(AddTodoDialogUiEvents.OnSetAlarmChange(it)) },
                     )
                 }
-                if (isAlarmEnabled) {
+                if (state.isAlarmEnabled) {
                     OutlinedTextField(
-                        value = "${time.hour}:${time.minute}",
+                        value = "${state.time.hour}:${state.time.minute}",
                         onValueChange = {},
                         readOnly = true,
                         label = {
@@ -163,7 +154,7 @@ fun AddDialog(
                         },
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    OutlinedTextField(value = date.toFormattedDateString(),
+                    OutlinedTextField(value = state.date.toFormattedDateString(),
                         onValueChange = {},
                         readOnly = true,
                         label = {
@@ -182,13 +173,13 @@ fun AddDialog(
                 // close and save buttons
                 Row {
                     OutlinedButton(modifier = Modifier.weight(1f), onClick = {
-                        onDismissRequest()
+                        onEvent(AddTodoDialogUiEvents.Close)
                     }) {
                         Text(text = "Close")
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(modifier = Modifier.weight(1f), onClick = {
-                        onSaveTodo()
+                        onEvent(AddTodoDialogUiEvents.AddTodo)
                     }) {
                         Text(text = "Add")
                     }
@@ -200,9 +191,9 @@ fun AddDialog(
                 onCancel = { showTimePicker = false },
                 onConfirm = {
                     showTimePicker = false
-                    onTimeChange(it)
+                    onEvent(AddTodoDialogUiEvents.OnTimeChange(it))
                 },
-                initial = time
+                initial = state.time
             )
         }
 
@@ -212,7 +203,7 @@ fun AddDialog(
             }, confirmButton = {
                 Button(onClick = {
                     showDatePicker = false
-                    onDateChange(datePickerState.selectedDateMillis!!)
+                    onEvent(AddTodoDialogUiEvents.OnDateChange(datePickerState.selectedDateMillis!!))
                 }) {
                     Text(text = "Ok")
                 }
