@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -223,7 +224,7 @@ class HomeViewModel @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     addTodoUseCase(
                         Todo(
-                            id = 0,
+                            id = UUID.randomUUID().hashCode(),
                             title = _addTodoDialogUiState.value.title,
                             description = _addTodoDialogUiState.value.description,
                             priority = _addTodoDialogUiState.value.priority,
