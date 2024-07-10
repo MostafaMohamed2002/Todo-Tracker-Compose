@@ -13,4 +13,6 @@ sealed class HomeScreenUiEvent {
     data class onTodoClick(val todo: Todo) : HomeScreenUiEvent()
 
     object onDismissTodoDetailesBottomSheet : HomeScreenUiEvent()
+
+    object onDeleteAllTodos : HomeScreenUiEvent()
 }

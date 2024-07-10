@@ -83,6 +83,8 @@ fun HomeScreen(
                     mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_TITLE))
                 }, onSortByPriority = {
                     mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_PRIORITY))
+                }, onDeleteAllTodos = {
+                    mViewModel.onEvent(HomeScreenUiEvent.onDeleteAllTodos)
                 })
         }
     ) { paddingValues ->

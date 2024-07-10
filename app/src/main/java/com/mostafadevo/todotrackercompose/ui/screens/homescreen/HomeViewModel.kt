@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -216,6 +217,13 @@ class HomeViewModel @Inject constructor(
                 _homeUiState.value = _homeUiState.value.copy(
                     isTodoDetailesBottomSheetEnabled = false, currentShownTodo = null
                 )
+            }
+
+            HomeScreenUiEvent.onDeleteAllTodos -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val alltodos = getAllTodosUseCase.invoke().first()
+                    alltodos.forEach { deleteTodoUseCase(it) }
+                }
             }
         }
     }

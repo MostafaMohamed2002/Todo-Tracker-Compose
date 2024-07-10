@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -22,7 +23,8 @@ fun HomeOverFlowMenu(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onSortByTitle: () -> Unit,
-    onSortByPriority: () -> Unit
+    onSortByPriority: () -> Unit,
+    onDeleteAllTodos: () -> Unit
 ) {
 
     Box(
@@ -62,6 +64,17 @@ fun HomeOverFlowMenu(
                 },
                 onClick = { onSortByPriority() },
                 text = { Text("Priority", fontSize = 16.sp) }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(text = "Delete All")
+                },
+                onClick = {
+                    onDeleteAllTodos()
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
+                }
             )
         }
     }

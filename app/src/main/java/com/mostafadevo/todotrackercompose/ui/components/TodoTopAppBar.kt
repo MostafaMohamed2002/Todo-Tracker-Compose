@@ -25,7 +25,8 @@ fun TodoTopAppBar(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onSortByTitle: () -> Unit,
-    onSortByPriority: () -> Unit
+    onSortByPriority: () -> Unit,
+    onDeleteAllTodos: () -> Unit = {}
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -81,7 +82,9 @@ fun TodoTopAppBar(
                         expanded = expanded,
                         onExpandedChange = { onExpandedChange(it) },
                         onSortByTitle = { onSortByTitle() },
-                        onSortByPriority = { onSortByPriority() })
+                        onSortByPriority = { onSortByPriority() }, onDeleteAllTodos = {
+                            onDeleteAllTodos()
+                        })
                 }
             }
         }
