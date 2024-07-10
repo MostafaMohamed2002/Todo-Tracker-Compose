@@ -2,6 +2,7 @@ package com.mostafadevo.todotrackercompose.di
 
 import android.content.Context
 import androidx.room.Room
+import com.mostafadevo.todotrackercompose.Utils.TodoReminderManager
 import com.mostafadevo.todotrackercompose.data.local.ITodoDao
 import com.mostafadevo.todotrackercompose.data.local.TodoDatabase
 import com.mostafadevo.todotrackercompose.data.local.repository.TodoRepositoryImpl
@@ -17,6 +18,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context = context
+
+    @Provides
+    fun providesTodoReminderManager(context: Context): TodoReminderManager {
+        return TodoReminderManager(context)
+    }
+
     @Provides
     fun providesTodoDatabase(
         @ApplicationContext context: Context
