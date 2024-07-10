@@ -7,7 +7,7 @@ import com.mostafadevo.todotrackercompose.data.local.ITodoDao
 import com.mostafadevo.todotrackercompose.data.local.TodoDatabase
 import com.mostafadevo.todotrackercompose.data.local.repository.TodoRepositoryImpl
 import com.mostafadevo.todotrackercompose.domain.repository.ITodoRepository
-import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCase
+import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCaseWithOptions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,7 +48,7 @@ object AppModule {
     @Provides
     fun providesGetAllTodosUseCase(
         iTodoRepository: ITodoRepository
-    ): GetAllTodosUseCase {
-        return GetAllTodosUseCase(iTodoRepository)
+    ): GetAllTodosUseCaseWithOptions {
+        return GetAllTodosUseCaseWithOptions(iTodoRepository)
     }
 }

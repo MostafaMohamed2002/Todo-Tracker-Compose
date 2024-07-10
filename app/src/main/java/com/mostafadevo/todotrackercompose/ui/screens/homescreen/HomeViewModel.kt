@@ -8,6 +8,7 @@ import com.mostafadevo.todotrackercompose.data.local.Todo
 import com.mostafadevo.todotrackercompose.domain.usecase.AddTodoUseCase
 import com.mostafadevo.todotrackercompose.domain.usecase.DeleteTodoUseCase
 import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCase
+import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCaseWithOptions
 import com.mostafadevo.todotrackercompose.domain.usecase.UpdateTodoUseCase
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddTodoDialogUiEvents
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddTodoDialogUiState
@@ -32,6 +33,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val getAllTodosWithOptionsUseCase: GetAllTodosUseCaseWithOptions,
     private val getAllTodosUseCase: GetAllTodosUseCase,
     private val updateTodoUseCase: UpdateTodoUseCase,
     private val addTodoUseCase: AddTodoUseCase,
@@ -86,14 +88,14 @@ class HomeViewModel @Inject constructor(
                     0 -> {
                         when (state.sortingOption) {
                             SortingOptions.BY_TITLE -> {
-                                getAllTodosUseCase(
+                                getAllTodosWithOptionsUseCase(
                                     showCompleted = state.selectedSegmentIndex,
                                     sortingOptions = state.sortingOption
                                 )
                             }
 
                             SortingOptions.BY_PRIORITY -> {
-                                getAllTodosUseCase(
+                                getAllTodosWithOptionsUseCase(
                                     showCompleted = state.selectedSegmentIndex,
                                     sortingOptions = state.sortingOption
                                 )
@@ -104,14 +106,14 @@ class HomeViewModel @Inject constructor(
                     1 -> {
                         when (state.sortingOption) {
                             SortingOptions.BY_TITLE -> {
-                                getAllTodosUseCase(
+                                getAllTodosWithOptionsUseCase(
                                     showCompleted = state.selectedSegmentIndex,
                                     sortingOptions = state.sortingOption
                                 )
                             }
 
                             SortingOptions.BY_PRIORITY -> {
-                                getAllTodosUseCase(
+                                getAllTodosWithOptionsUseCase(
                                     showCompleted = state.selectedSegmentIndex,
                                     sortingOptions = state.sortingOption
                                 )
