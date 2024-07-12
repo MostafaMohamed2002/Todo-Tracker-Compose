@@ -94,6 +94,8 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     //material beta
     implementation(libs.material3)
+    // compose navigation with enter , exit transitions 😳
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
 }
 ksp {

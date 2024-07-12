@@ -14,6 +14,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,11 +25,20 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.mostafadevo.todotrackercompose.Utils.Screens
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.HomeScreen
+import com.mostafadevo.todotrackercompose.ui.screens.searchscreen.SearchScreen
+import com.mostafadevo.todotrackercompose.ui.screens.searchscreen.SearchScreenViewModel
 import com.mostafadevo.todotrackercompose.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -40,7 +53,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         Timber.d("onCreate")
         setContent {
-            AppTheme{
+            AppTheme {
                 val context = LocalContext.current
                 val showDialog = rememberSaveable { mutableStateOf(false) }
 
@@ -77,8 +90,44 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = Screens.HOME_SCREEN,
+                    enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left, tween(1000)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right, tween(1000)
+                        )
+                    },
+                    popEnterTransition = {
+                        fadeIn(tween(1000))
+                    },
+                    popExitTransition = {
+                        fadeOut(tween(1000))
 
-                HomeScreen()
+                    }
+
+                ) {
+                    composable(
+                        route = Screens.HOME_SCREEN,
+                    ) {
+                        HomeScreen(navController = navController)
+                    }
+                    composable(route = Screens.SEARCH_SCREEN) {
+                        val mViewModel: SearchScreenViewModel = hiltViewModel()
+                        val uiState by mViewModel.uiState.collectAsStateWithLifecycle()
+                        SearchScreen(
+                            navController = navController,
+                            onEvent = mViewModel::onEvent,
+                            state = uiState
+                        )
+                    }
+                }
             }
         }
     }

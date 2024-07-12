@@ -39,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.mostafadevo.todotrackercompose.Utils.Screens
 import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionButton
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
@@ -54,7 +56,8 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun HomeScreen(
-    mViewModel: HomeViewModel = hiltViewModel()
+    mViewModel: HomeViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val uiState by mViewModel.homeUiState.collectAsState()
     val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
@@ -87,7 +90,7 @@ fun HomeScreen(
                     mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_PRIORITY))
                 }, onDeleteAllTodos = {
                     mViewModel.onEvent(HomeScreenUiEvent.onDeleteAllTodos)
-                })
+                }, onNavigateToSearchScreen = { navController.navigate(Screens.SEARCH_SCREEN) })
         }
     ) { paddingValues ->
         val options = listOf("To-Do", "Done")

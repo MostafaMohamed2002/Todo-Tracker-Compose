@@ -34,7 +34,7 @@ fun TodoItem(
     onCheckedChange: (Boolean) -> Unit
 ) {
     OutlinedCard(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
 
@@ -50,12 +50,11 @@ fun TodoItem(
                 Text(
                     text = todo.title,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 if (todo.description != null) {
-                    Text(text = todo.description, maxLines = 1)
+                    Text(text = todo.description)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
                 Text(

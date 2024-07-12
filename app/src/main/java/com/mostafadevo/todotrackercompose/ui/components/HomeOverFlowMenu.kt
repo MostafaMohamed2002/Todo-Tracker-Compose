@@ -1,11 +1,13 @@
 package com.mostafadevo.todotrackercompose.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -13,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,58 +27,72 @@ fun HomeOverFlowMenu(
     onExpandedChange: (Boolean) -> Unit,
     onSortByTitle: () -> Unit,
     onSortByPriority: () -> Unit,
-    onDeleteAllTodos: () -> Unit
+    onDeleteAllTodos: () -> Unit,
+    onNavigateToSearchScreen: () -> Unit
 ) {
 
-    Box(
-        modifier = Modifier
-            .padding(16.dp)
+    Row(
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { onExpandedChange(true) }) {
+        IconButton(onClick = {
+            onNavigateToSearchScreen()
+        }) {
             Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = "sort by",
+                imageVector = Icons.Default.Search,
+                contentDescription = "search screen",
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) }
+        Box(
         ) {
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = rememberTitle(),
-                        contentDescription = "title",
-                        modifier = Modifier.size(16.dp)
-                    )
-                },
-                onClick = { onSortByTitle() },
-                text = { Text("Title", fontSize = 16.sp) }
-            )
-            DropdownMenuItem(
-                leadingIcon = {
-                    Icon(
-                        imageVector = rememberPriorityHigh(),
-                        contentDescription = "priorityicon",
-                        modifier = Modifier.size(16.dp)
-                    )
-                },
-                onClick = { onSortByPriority() },
-                text = { Text("Priority", fontSize = 16.sp) }
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(text = "Delete All")
-                },
-                onClick = {
-                    onDeleteAllTodos()
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
-                }
-            )
+
+            IconButton(onClick = { onExpandedChange(true) }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "sort by",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { onExpandedChange(false) }
+            ) {
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = rememberTitle(),
+                            contentDescription = "title",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    },
+                    onClick = { onSortByTitle() },
+                    text = { Text("Title", fontSize = 16.sp) }
+                )
+                DropdownMenuItem(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = rememberPriorityHigh(),
+                            contentDescription = "priorityicon",
+                            modifier = Modifier.size(16.dp)
+                        )
+                    },
+                    onClick = { onSortByPriority() },
+                    text = { Text("Priority", fontSize = 16.sp) }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(text = "Delete All")
+                    },
+                    onClick = {
+                        onDeleteAllTodos()
+                    },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
+                    }
+                )
+            }
         }
     }
 }
