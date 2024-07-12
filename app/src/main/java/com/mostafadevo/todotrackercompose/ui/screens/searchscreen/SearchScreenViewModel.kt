@@ -39,7 +39,11 @@ class SearchScreenViewModel @Inject constructor(
                 }
             }
 
-            SearchScreenUiEvents.onClearSearchText -> TODO()
+            SearchScreenUiEvents.onClearSearchText -> {
+                _uiState.value = _uiState.value.copy(
+                    query = ""
+                )
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
@@ -66,6 +67,17 @@ fun SearchScreen(
                                 navController.popBackStack(Screens.HOME_SCREEN, false)
                             }
 
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .clickable {
+                                onEvent(SearchScreenUiEvents.onClearSearchText)
+                            }
                     )
                 }
             )
