@@ -1,6 +1,7 @@
 package com.mostafadevo.todotrackercompose.ui.screens.searchscreen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
@@ -103,7 +104,11 @@ fun SearchScreen(
                 }
             }
         }
-
+        BackHandler(
+            onBack = {
+                navController.popBackStack(Screens.HOME_SCREEN, false)
+            }
+        )
     }
 }
 
