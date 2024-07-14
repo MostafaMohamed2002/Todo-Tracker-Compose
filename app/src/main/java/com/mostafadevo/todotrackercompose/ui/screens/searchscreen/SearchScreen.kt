@@ -5,6 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mostafadevo.todotrackercompose.Utils.Screens
@@ -86,6 +89,18 @@ fun SearchScreen(
         expanded = isExpanded,
         onExpandedChange = { }
     ) {
+        if (state.isNoTodosFound) {
+            // Show no results found message
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize(),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+
+            ) {
+                Text(text = "No results found for : ${state.query} 😔", fontWeight = FontWeight.Bold)
+            }
+        }
         LazyColumn {
             state.todos.let {
                 items(it!!, key = { it.id }) {

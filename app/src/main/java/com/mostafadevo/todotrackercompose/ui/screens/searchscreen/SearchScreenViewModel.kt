@@ -23,7 +23,8 @@ class SearchScreenViewModel @Inject constructor(
         when (event) {
             is SearchScreenUiEvents.onQueryChange -> {
                 _uiState.value = _uiState.value.copy(
-                    query = event.query
+                    query = event.query,
+                    isNoTodosFound = false
                 )
             }
 
@@ -35,6 +36,11 @@ class SearchScreenViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
                             todos = todos
                         )
+                        if (todos.isEmpty()) {
+                            _uiState.value = _uiState.value.copy(
+                                isNoTodosFound = true
+                            )
+                        }
                     }
                 }
             }

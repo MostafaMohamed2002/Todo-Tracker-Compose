@@ -4,5 +4,6 @@ import com.mostafadevo.todotrackercompose.data.local.Todo
 
 data class SearchScreenUiState(
     val todos: List<Todo>? = emptyList(),
-    val query: String = ""
+    val query: String = "",
+    val isNoTodosFound: Boolean = false
 )
