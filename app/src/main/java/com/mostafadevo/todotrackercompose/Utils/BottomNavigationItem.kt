@@ -8,6 +8,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavigationItem(val route: String, val icon: ImageVector, val title: String) {
     object Home : BottomNavigationItem("home", Icons.Default.Home, "Home")
-    object Setting : BottomNavigationItem("setting", Icons.Default.Settings, "Setting")
+    object Setting : BottomNavigationItem("setting", Icons.Default.Settings, "Settings")
     object Search : BottomNavigationItem("search", Icons.Default.Search, "Search")
 }
