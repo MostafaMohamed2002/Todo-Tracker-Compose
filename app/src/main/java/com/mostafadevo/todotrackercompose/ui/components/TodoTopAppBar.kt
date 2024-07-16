@@ -85,7 +85,6 @@ fun TodoTopAppBar(
                         onSortByTitle = { onSortByTitle() },
                         onSortByPriority = { onSortByPriority() },
                         onDeleteAllTodos = { onDeleteAllTodos() },
-                        onNavigateToSearchScreen = { onNavigateToSearchScreen() }
                     )
                 }
             }

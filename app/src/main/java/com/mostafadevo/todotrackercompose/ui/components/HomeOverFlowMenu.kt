@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -28,22 +27,12 @@ fun HomeOverFlowMenu(
     onSortByTitle: () -> Unit,
     onSortByPriority: () -> Unit,
     onDeleteAllTodos: () -> Unit,
-    onNavigateToSearchScreen: () -> Unit
 ) {
 
     Row(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = {
-            onNavigateToSearchScreen()
-        }) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "search screen",
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
         Box(
         ) {
 

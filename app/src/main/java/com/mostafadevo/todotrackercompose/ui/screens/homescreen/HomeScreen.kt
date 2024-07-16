@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,8 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.mostafadevo.todotrackercompose.Utils.Screens
 import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionButton
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
@@ -57,7 +56,7 @@ import timber.log.Timber
 @Composable
 fun HomeScreen(
     mViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController
+    paddingValues: PaddingValues
 ) {
     val uiState by mViewModel.homeUiState.collectAsState()
     val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
@@ -68,7 +67,9 @@ fun HomeScreen(
 
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier
+            .padding(bottom = paddingValues.calculateBottomPadding())
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
             AddTodoFloatingActionButton(onClick = {
                 mViewModel.onEvent(
@@ -90,7 +91,7 @@ fun HomeScreen(
                     mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_PRIORITY))
                 }, onDeleteAllTodos = {
                     mViewModel.onEvent(HomeScreenUiEvent.onDeleteAllTodos)
-                }, onNavigateToSearchScreen = { navController.navigate(Screens.SEARCH_SCREEN) })
+                }, onNavigateToSearchScreen = { })
         }
     ) { paddingValues ->
         val options = listOf("To-Do", "Done")
