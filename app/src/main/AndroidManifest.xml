@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name=".MyApp"
@@ -26,7 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".ui.screens.homescreen.TaskReminderBroadCastReciever" />
+
+        <receiver android:name=".Utils.TaskReminderBroadCastReciever" />
+        <receiver android:name=".Utils.OnTaskMarkedAsCompletedReciever" />
     </application>
 
 </manifest>

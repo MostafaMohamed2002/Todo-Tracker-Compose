@@ -19,4 +19,7 @@ interface ITodoDao {
 
     @Delete
     suspend fun deleteTodo(todo: Todo)
+
+    @Query("UPDATE TODOS SET isCompleted = 1 WHERE id = :todoId")
+    suspend fun markTodoAsCompleted(todoId: Int)
 }

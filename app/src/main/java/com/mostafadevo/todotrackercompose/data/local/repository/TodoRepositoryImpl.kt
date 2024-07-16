@@ -28,4 +28,8 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun deleteTodo(todo: Todo) {
         todoDao.deleteTodo(todo)
     }
+
+    override suspend fun markTodoAsCompleted(todoId: Int) {
+        todoDao.markTodoAsCompleted(todoId)
+    }
 }
