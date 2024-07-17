@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.mostafadevo.todotrackercompose.Utils.TodoReminderManager
 import com.mostafadevo.todotrackercompose.data.local.ITodoDao
 import com.mostafadevo.todotrackercompose.data.local.TodoDatabase
-import com.mostafadevo.todotrackercompose.data.local.repository.TodoRepositoryImpl
 import com.mostafadevo.todotrackercompose.domain.repository.ITodoRepository
 import com.mostafadevo.todotrackercompose.domain.usecase.GetAllTodosUseCaseWithOptions
 import dagger.Module
@@ -40,10 +39,6 @@ object AppModule {
         todoDatabase: TodoDatabase
     ): ITodoDao = todoDatabase.todoDao()
 
-    @Provides
-    fun providesTodoRepository(
-        todoRepositoryImpl: TodoRepositoryImpl
-    ): ITodoRepository = todoRepositoryImpl
 
     @Provides
     fun providesGetAllTodosUseCase(

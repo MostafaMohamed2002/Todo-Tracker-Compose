@@ -96,6 +96,8 @@ dependencies {
     implementation(libs.material3)
     // compose navigation with enter , exit transitions 😳
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    //data store preferences
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
 }
 ksp {

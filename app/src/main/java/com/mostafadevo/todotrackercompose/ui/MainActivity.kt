@@ -29,10 +29,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mostafadevo.todotrackercompose.Utils.BottomNavigationItem
 import com.mostafadevo.todotrackercompose.ui.screens.MainScreen
+import com.mostafadevo.todotrackercompose.ui.screens.settings.SettingsScreenViewModel
 import com.mostafadevo.todotrackercompose.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -47,7 +50,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         Timber.d("onCreate")
         setContent {
-            AppTheme {
+            val settingsViewModel = hiltViewModel<SettingsScreenViewModel>()
+            val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+            AppTheme(
+                darkTheme = uiState.isDarkTheme,
+                dynamicColor = uiState.isDynamicColors
+            ) {
                 val context = LocalContext.current
                 val showDialog = rememberSaveable { mutableStateOf(false) }
 
