@@ -4,11 +4,13 @@ import com.mostafadevo.todotrackercompose.data.local.Todo
 import com.mostafadevo.todotrackercompose.domain.repository.ITodoRepository
 import javax.inject.Inject
 
-class DeleteTodoUseCase @Inject constructor(
-    private val iTodoRepository: ITodoRepository
+class DeleteTodoUseCase
+@Inject
+constructor(
+  private val iTodoRepository: ITodoRepository,
 ) {
-    operator suspend fun invoke(todo: Todo) {
-        iTodoRepository.deleteTodo(todo)
-    }
-    // TODO: handle disabling alarm if todo has alarm enabled
+  suspend operator fun invoke(todo: Todo) {
+    iTodoRepository.deleteTodo(todo)
+  }
+  // TODO: handle disabling alarm if todo has alarm enabled
 }

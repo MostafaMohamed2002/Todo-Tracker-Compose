@@ -25,86 +25,102 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    paddingValues: PaddingValues,
-    state: SettingsScreenUiState,
-    onEvent: (SettingsScreenUiEvents) -> Unit
+  paddingValues: PaddingValues,
+  state: SettingsScreenUiState,
+  onEvent: (SettingsScreenUiEvents) -> Unit,
 ) {
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  val scrollBehavior =
+    TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .padding(bottom = paddingValues.calculateBottomPadding()),
-        topBar = {
-            LargeTopAppBar(
-                title = { Text("Settings \uD83D\uDEE0\uFE0F") },
-                scrollBehavior = scrollBehavior,
-            )
-        },
-        content = { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-            ) {
-                item {
-                    Text(
-                        "Appearance",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-                item {
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Row(
-                            Modifier.padding(16.dp),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "Dark Mode",
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Switch(checked = state.isDarkTheme,
-                                onCheckedChange = {
-                                    onEvent(SettingsScreenUiEvents.ToggleDarkTheme(it))
-                                })
-                        }
-                    }
-                }
-                item {
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Row(
-                            Modifier.padding(16.dp),
-                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "Dynamic Colors",
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Switch(checked = state.isDynamicColors,
-                                onCheckedChange = {
-                                    onEvent(SettingsScreenUiEvents.ToggleDynamicColors(it))
-                                })
-                        }
-                    }
-                }
-            }
+  Scaffold(
+    modifier =
+    Modifier
+      .nestedScroll(scrollBehavior.nestedScrollConnection)
+      .padding(bottom = paddingValues.calculateBottomPadding()),
+    topBar = {
+      LargeTopAppBar(
+        title = { Text("Settings \uD83D\uDEE0\uFE0F") },
+        scrollBehavior = scrollBehavior,
+      )
+    },
+    content = { innerPadding ->
+      LazyColumn(
+        modifier =
+        Modifier
+          .fillMaxSize()
+          .padding(innerPadding),
+      ) {
+        item {
+          Text(
+            "Appearance",
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+            modifier = Modifier.padding(start = 16.dp),
+          )
         }
-    )
+        item {
+          Card(
+            modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+          ) {
+            Row(
+              Modifier.padding(16.dp),
+              verticalAlignment =
+              androidx
+                .compose
+                .ui
+                .Alignment
+                .CenterVertically,
+            ) {
+              Text(
+                "Dark Mode",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                modifier = Modifier.weight(1f),
+              )
+              Switch(
+                checked = state.isDarkTheme,
+                onCheckedChange = {
+                  onEvent(SettingsScreenUiEvents.ToggleDarkTheme(it))
+                },
+              )
+            }
+          }
+        }
+        item {
+          Card(
+            modifier =
+            Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+          ) {
+            Row(
+              Modifier.padding(16.dp),
+              verticalAlignment =
+              androidx
+                .compose
+                .ui
+                .Alignment
+                .CenterVertically,
+            ) {
+              Text(
+                "Dynamic Colors",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                modifier = Modifier.weight(1f),
+              )
+              Switch(
+                checked = state.isDynamicColors,
+                onCheckedChange = {
+                  onEvent(SettingsScreenUiEvents.ToggleDynamicColors(it))
+                },
+              )
+            }
+          }
+        }
+      }
+    },
+  )
 }

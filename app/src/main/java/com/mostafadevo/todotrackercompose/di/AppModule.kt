@@ -17,33 +17,25 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideContext(@ApplicationContext context: Context): Context = context
+  @Provides
+  @Singleton
+  fun provideContext(
+    @ApplicationContext context: Context,
+  ): Context = context
 
-    @Provides
-    fun providesTodoReminderManager(context: Context): TodoReminderManager {
-        return TodoReminderManager(context)
-    }
+  @Provides
+  fun providesTodoReminderManager(context: Context): TodoReminderManager = TodoReminderManager(context)
 
-    @Provides
-    fun providesTodoDatabase(
-        @ApplicationContext context: Context
-    ): TodoDatabase {
-        return Room.databaseBuilder(context, TodoDatabase::class.java, "todo.db").build()
-    }
+  @Provides
+  fun providesTodoDatabase(
+    @ApplicationContext context: Context,
+  ): TodoDatabase = Room.databaseBuilder(context, TodoDatabase::class.java, "todo.db").build()
 
-    @Provides
-    @Singleton
-    fun providesTodoDao(
-        todoDatabase: TodoDatabase
-    ): ITodoDao = todoDatabase.todoDao()
+  @Provides
+  @Singleton
+  fun providesTodoDao(todoDatabase: TodoDatabase): ITodoDao = todoDatabase.todoDao()
 
-
-    @Provides
-    fun providesGetAllTodosUseCase(
-        iTodoRepository: ITodoRepository
-    ): GetAllTodosUseCaseWithOptions {
-        return GetAllTodosUseCaseWithOptions(iTodoRepository)
-    }
+  @Provides
+  fun providesGetAllTodosUseCase(iTodoRepository: ITodoRepository): GetAllTodosUseCaseWithOptions =
+    GetAllTodosUseCaseWithOptions(iTodoRepository)
 }

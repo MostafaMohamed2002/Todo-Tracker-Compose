@@ -1,10 +1,13 @@
 package com.mostafadevo.todotrackercompose.ui.screens.homescreen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,175 +59,200 @@ import timber.log.Timber
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun HomeScreen(
-    mViewModel: HomeViewModel = hiltViewModel(),
-    paddingValues: PaddingValues
+  mViewModel: HomeViewModel = hiltViewModel(),
+  paddingValues: PaddingValues,
 ) {
-    val uiState by mViewModel.homeUiState.collectAsState()
-    val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
-    val todoDetailesBottomSheetUiState by mViewModel.todoDetailesBottomSheetUiState.collectAsState()
-    val lazyColumnState = rememberLazyListState()
-    val isScrolledDown by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0 } }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
-
-    Scaffold(
-        modifier = Modifier
-            .padding(bottom = paddingValues.calculateBottomPadding())
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        floatingActionButton = {
-            AddTodoFloatingActionButton(onClick = {
-                mViewModel.onEvent(
-                    HomeScreenUiEvent.AddTodoButton
-                )
-            }, expanded = !isScrolledDown)
+  val uiState by mViewModel.homeUiState.collectAsState()
+  val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
+  val todoDetailesBottomSheetUiState by mViewModel.todoDetailesBottomSheetUiState.collectAsState()
+  val lazyColumnState = rememberLazyListState()
+  val isScrolledDown by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0 } }
+  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+  Scaffold(
+    modifier =
+    Modifier
+      .padding(bottom = paddingValues.calculateBottomPadding())
+      .nestedScroll(scrollBehavior.nestedScrollConnection),
+    floatingActionButton = {
+      AddTodoFloatingActionButton(onClick = {
+        mViewModel.onEvent(
+          HomeScreenUiEvent.AddTodoButton,
+        )
+      }, expanded = !isScrolledDown)
+    },
+    topBar = {
+      TodoTopAppBar(
+        scrollBehavior = scrollBehavior,
+        screen = "Home",
+        expanded = uiState.isMenuExpanded,
+        onExpandedChange = {
+          mViewModel.onEvent(HomeScreenUiEvent.ToggleSortingMenu(it))
         },
-        topBar = {
-            TodoTopAppBar(
-                scrollBehavior = scrollBehavior,
-                screen = "Home",
-                expanded = uiState.isMenuExpanded,
-                onExpandedChange = {
-                    mViewModel.onEvent(HomeScreenUiEvent.ToggleSortingMenu(it))
-                },
-                onSortByTitle = {
-                    mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_TITLE))
-                }, onSortByPriority = {
-                    mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_PRIORITY))
-                }, onDeleteAllTodos = {
-                    mViewModel.onEvent(HomeScreenUiEvent.onDeleteAllTodos)
-                }, onNavigateToSearchScreen = { })
-        }
-    ) { paddingValues ->
-        val options = listOf("To-Do", "Done")
-        if (uiState.isAddTodoDialogOpen) {
-            AddDialog(
-                state = addTodoDialogUiState,
-                onEvent = mViewModel::onDialogEvent
-            )
-        }
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues),
-            state = lazyColumnState
-        ) {
-            item {
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    options.forEachIndexed { index, label ->
-                        SegmentedButton(
-                            selected = index == uiState.selectedSegmentIndex,
-                            onClick = {
-                                mViewModel.onEvent(HomeScreenUiEvent.SelectSegment(selctedSegment = index))
-                            },
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = options.size,
-                            )
-                        ) {
-                            Text(text = "$label")
-                        }
-                    }
-                }
-            }
-            items(items = uiState.todos, key = { it.id }) { todo ->
-                ElevatedCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .animateItem(
-                            //customized animations
-                            fadeInSpec = null,
-                            fadeOutSpec = null,
-                            placementSpec = spring(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow
-                            )
-                        )
-                        .clickable {
-                            Timber.d("Clicked on todo item: ${todo.id}")
-                            mViewModel.onEvent(HomeScreenUiEvent.onTodoClick(todo))
-                        }
-
-
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = todo.title,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Priority: ${todo.priority}",
-                                color = when (todo.priority) {
-                                    Priority.HIGH -> priorityHigh
-                                    Priority.MEDIUM -> priorityMedium
-                                    Priority.LOW -> priorityLow
-                                    Priority.UNSPECIFIED -> priorityUnspecified
-                                }
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(0.2f)
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Checkbox(
-                                checked = todo.isCompleted,
-                                onCheckedChange = {
-                                    mViewModel.onEvent(HomeScreenUiEvent.onCheckTodo(todo, it))
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        if (uiState.isTodoDetailesBottomSheetEnabled) {
-            uiState.currentShownTodo?.let {
-                TodoDetailesBottomSheet(
-                    state = todoDetailesBottomSheetUiState,
-                    onDismiss = {
-                        mViewModel.onEvent(HomeScreenUiEvent.onDismissTodoDetailesBottomSheet)
-                    },
-                    onEvent = mViewModel::onBottomSheetEvent
-                )
-            }
-        }
-        if (uiState.todos.isEmpty() && uiState.selectedSegmentIndex == 0) {
-
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No To-Do items found",
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-        } else if (uiState.todos.isEmpty() && uiState.selectedSegmentIndex == 1) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No Done items found",
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-        }
+        onSortByTitle = {
+          mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_TITLE))
+        },
+        onSortByPriority = {
+          mViewModel.onEvent(HomeScreenUiEvent.SortTodos(SortingOptions.BY_PRIORITY))
+        },
+        onDeleteAllTodos = {
+          mViewModel.onEvent(HomeScreenUiEvent.OnDeleteAllTodos)
+        },
+        onNavigateToSearchScreen = { },
+      )
+    },
+  ) { paddingValues ->
+    val options = listOf("To-Do", "Done")
+    if (uiState.isAddTodoDialogOpen) {
+      AddDialog(
+        state = addTodoDialogUiState,
+        onEvent = mViewModel::onDialogEvent,
+      )
     }
+    LazyColumn(
+      modifier = Modifier.padding(paddingValues),
+      state = lazyColumnState,
+    ) {
+      item {
+        SingleChoiceSegmentedButtonRow(
+          modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        ) {
+          options.forEachIndexed { index, label ->
+            SegmentedButton(
+              selected = index == uiState.selectedSegmentIndex,
+              onClick = {
+                mViewModel.onEvent(HomeScreenUiEvent.SelectSegment(selctedSegment = index))
+              },
+              shape =
+              SegmentedButtonDefaults.itemShape(
+                index = index,
+                count = options.size,
+              ),
+            ) {
+              Text(text = "$label")
+            }
+          }
+        }
+      }
+      items(items = uiState.todos, key = { it.id }) { todo ->
+        val isExpanded = remember { mutableStateOf(false) }
+
+        ElevatedCard(
+          modifier =
+          Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable(
+              interactionSource = remember { MutableInteractionSource() },
+              indication = null,
+            ) {
+              isExpanded.value = !isExpanded.value
+            }
+            .animateContentSize()
+            .animateItem(
+              // customized animations
+              fadeInSpec = null,
+              fadeOutSpec = null,
+              placementSpec =
+              spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow,
+              ),
+            ),
+        ) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Column(
+              modifier =
+              Modifier
+                .padding(16.dp)
+                .weight(1f),
+            ) {
+              val animtedMaxLines by animateIntAsState(
+                if (isExpanded.value) 15 else 1,
+              )
+              Timber.d("animtedMaxLines: $animtedMaxLines")
+              Text(
+                text = todo.title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                minLines = 1,
+                maxLines = animtedMaxLines,
+              )
+              Spacer(modifier = Modifier.height(8.dp))
+              Text(
+                text = todo.title,
+                fontSize = 16.sp,
+                minLines = 1,
+                maxLines = animtedMaxLines,
+              )
+              Spacer(modifier = Modifier.height(8.dp))
+
+              Text(
+                text = "Priority: ${todo.priority}",
+                color =
+                when (todo.priority) {
+                  Priority.HIGH -> priorityHigh
+                  Priority.MEDIUM -> priorityMedium
+                  Priority.LOW -> priorityLow
+                  Priority.UNSPECIFIED -> priorityUnspecified
+                },
+              )
+            }
+            Column(
+              modifier =
+              Modifier
+                .weight(0.2f)
+                .padding(16.dp),
+              horizontalAlignment = Alignment.CenterHorizontally,
+              verticalArrangement = Arrangement.Center,
+            ) {
+              Checkbox(
+                checked = todo.isCompleted,
+                onCheckedChange = {
+                  mViewModel.onEvent(HomeScreenUiEvent.OnCheckTodo(todo, it))
+                },
+              )
+            }
+          }
+        }
+      }
+    }
+
+    if (uiState.isTodoDetailesBottomSheetEnabled) {
+      uiState.currentShownTodo?.let {
+        TodoDetailesBottomSheet(
+          state = todoDetailesBottomSheetUiState,
+          onDismiss = {
+            mViewModel.onEvent(HomeScreenUiEvent.OnDismissTodoDetailesBottomSheet)
+          },
+          onEvent = mViewModel::onBottomSheetEvent,
+        )
+      }
+    }
+    if (uiState.todos.isEmpty() && uiState.selectedSegmentIndex == 0) {
+      Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+      ) {
+        Text(
+          text = "No To-Do items found",
+          modifier = Modifier.padding(16.dp),
+        )
+      }
+    } else if (uiState.todos.isEmpty() && uiState.selectedSegmentIndex == 1) {
+      Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+      ) {
+        Text(
+          text = "No Done items found",
+          modifier = Modifier.padding(16.dp),
+        )
+      }
+    }
+  }
 }

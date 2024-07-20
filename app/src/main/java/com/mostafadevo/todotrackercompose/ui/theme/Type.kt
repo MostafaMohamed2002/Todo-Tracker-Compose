@@ -1,40 +1,40 @@
 package com.mostafadevo.todotrackercompose.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.mostafadevo.todotrackercompose.R
 
-val provider = GoogleFont.Provider(
+val provider =
+  GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
-)
+    certificates = R.array.com_google_android_gms_fonts_certs,
+  )
 
-val bodyFontFamily = FontFamily(
+val bodyFontFamily =
+  FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
-        fontProvider = provider,
-    )
-)
+      googleFont = GoogleFont("Roboto"),
+      fontProvider = provider,
+    ),
+  )
 
-val displayFontFamily = FontFamily(
+val displayFontFamily =
+  FontFamily(
     Font(
-        googleFont = GoogleFont("Cairo"),
-        fontProvider = provider,
-    )
-)
+      googleFont = GoogleFont("Cairo"),
+      fontProvider = provider,
+    ),
+  )
 
 // Default Material 3 typography values
 val baseline = Typography()
 
-val AppTypography = Typography(
+val AppTypography =
+  Typography(
     displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
     displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
     displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
@@ -50,5 +50,4 @@ val AppTypography = Typography(
     labelLarge = baseline.labelLarge.copy(fontFamily = bodyFontFamily),
     labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
     labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
-)
-
+  )

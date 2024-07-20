@@ -10,25 +10,25 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun AddTodoFloatingActionButton(
-    onClick: () -> Unit,
-    expanded: Boolean = false
+  onClick: () -> Unit,
+  expanded: Boolean = false,
 ) {
-    ExtendedFloatingActionButton(
-        text = {
-            Text(text = "Add Todo")
-        },
-        icon = {
-            Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = "add todo")
-        },
-        onClick = {
-            onClick()
-        },
-        expanded = expanded,
-    )
+  ExtendedFloatingActionButton(
+    text = {
+      Text(text = "Add Todo")
+    },
+    icon = {
+      Icon(imageVector = Icons.Rounded.AddCircle, contentDescription = "add todo")
+    },
+    onClick = {
+      onClick()
+    },
+    expanded = expanded,
+  )
 }
 
 @Preview
 @Composable
 private fun PreviewAddTodoFloatingActionButton() {
-    AddTodoFloatingActionButton({})
+  AddTodoFloatingActionButton({})
 }

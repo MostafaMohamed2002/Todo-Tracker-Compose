@@ -13,43 +13,49 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScreenViewModel @Inject constructor(
-    private val queryTodosUseCase: QueryTodosUseCase
+class SearchScreenViewModel
+@Inject
+constructor(
+  private val queryTodosUseCase: QueryTodosUseCase,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<SearchScreenUiState>(SearchScreenUiState())
-    val uiState = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow<SearchScreenUiState>(SearchScreenUiState())
+  val uiState = _uiState.asStateFlow()
 
-    fun onEvent(event: SearchScreenUiEvents) {
-        when (event) {
-            is SearchScreenUiEvents.onQueryChange -> {
-                _uiState.value = _uiState.value.copy(
-                    query = event.query,
-                    isNoTodosFound = false
+  fun onEvent(event: SearchScreenUiEvents) {
+    when (event) {
+      is SearchScreenUiEvents.onQueryChange -> {
+        _uiState.value =
+          _uiState.value.copy(
+            query = event.query,
+            isNoTodosFound = false,
+          )
+      }
+
+      SearchScreenUiEvents.onSearch -> {
+        viewModelScope.launch(Dispatchers.IO) {
+          val todos =
+            queryTodosUseCase(_uiState.value.query).first()
+          withContext(Dispatchers.Main) {
+            _uiState.value =
+              _uiState.value.copy(
+                todos = todos,
+              )
+            if (todos.isEmpty()) {
+              _uiState.value =
+                _uiState.value.copy(
+                  isNoTodosFound = true,
                 )
             }
-
-            SearchScreenUiEvents.onSearch -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val todos =
-                        queryTodosUseCase(_uiState.value.query).first()
-                    withContext(Dispatchers.Main) {
-                        _uiState.value = _uiState.value.copy(
-                            todos = todos
-                        )
-                        if (todos.isEmpty()) {
-                            _uiState.value = _uiState.value.copy(
-                                isNoTodosFound = true
-                            )
-                        }
-                    }
-                }
-            }
-
-            SearchScreenUiEvents.onClearSearchText -> {
-                _uiState.value = _uiState.value.copy(
-                    query = ""
-                )
-            }
+          }
         }
+      }
+
+      SearchScreenUiEvents.onClearSearchText -> {
+        _uiState.value =
+          _uiState.value.copy(
+            query = "",
+          )
+      }
     }
+  }
 }

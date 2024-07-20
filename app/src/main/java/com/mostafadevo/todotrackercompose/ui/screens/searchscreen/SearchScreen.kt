@@ -33,90 +33,96 @@ import com.mostafadevo.todotrackercompose.ui.components.TodoItem
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    modifier: Modifier = Modifier,
-    state: SearchScreenUiState,
-    onEvent: (SearchScreenUiEvents) -> Unit,
-    navController: NavHostController
+  modifier: Modifier = Modifier,
+  state: SearchScreenUiState,
+  onEvent: (SearchScreenUiEvents) -> Unit,
+  navController: NavHostController,
 ) {
-
-    val isExpanded by remember {
-        mutableStateOf(true)
-    }
-    Scaffold {
-
-        SearchBar(
-            inputField = {
-                SearchBarDefaults.InputField(
-                    modifier = Modifier,
-                    query = state.query,
-                    onQueryChange = { onEvent(SearchScreenUiEvents.onQueryChange(it)) },
-                    onSearch = { onEvent(SearchScreenUiEvents.onSearch) },
-                    expanded = isExpanded,
-                    onExpandedChange = { }, placeholder = {
-                        Text(text = "Type to search")
-                    }, leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(16.dp)
-
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .clickable {
-                                    onEvent(SearchScreenUiEvents.onClearSearchText)
-                                }
-                        )
-                    }
-                )
-            },
-            expanded = isExpanded,
-            onExpandedChange = { }
+  val isExpanded by remember {
+    mutableStateOf(true)
+  }
+  Scaffold {
+    SearchBar(
+      inputField = {
+        SearchBarDefaults.InputField(
+          modifier = Modifier,
+          query = state.query,
+          onQueryChange = { onEvent(SearchScreenUiEvents.onQueryChange(it)) },
+          onSearch = { onEvent(SearchScreenUiEvents.onSearch) },
+          expanded = isExpanded,
+          onExpandedChange = { },
+          placeholder = {
+            Text(text = "Type to search")
+          },
+          leadingIcon = {
+            Icon(
+              imageVector = Icons.Default.ArrowBack,
+              contentDescription = "",
+              modifier =
+              Modifier
+                .padding(16.dp),
+            )
+          },
+          trailingIcon = {
+            Icon(
+              imageVector = Icons.Default.Clear,
+              contentDescription = "",
+              modifier =
+              Modifier
+                .padding(16.dp)
+                .clickable {
+                  onEvent(SearchScreenUiEvents.onClearSearchText)
+                },
+            )
+          },
+        )
+      },
+      expanded = isExpanded,
+      onExpandedChange = { },
+    ) {
+      BackHandler {
+        navController.popBackStack()
+      }
+      if (state.isNoTodosFound) {
+        // Show no results found message
+        Box(
+          modifier =
+          Modifier
+            .padding(16.dp)
+            .fillMaxSize(),
+          contentAlignment =
+          androidx
+            .compose
+            .ui
+            .Alignment
+            .Center,
         ) {
-            BackHandler {
-                navController.popBackStack()
-            }
-            if (state.isNoTodosFound) {
-                // Show no results found message
-                Box(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxSize(),
-                    contentAlignment = androidx.compose.ui.Alignment.Center
-
-                ) {
-                    Text(
-                        text = "No results found for : ${state.query} 😔",
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-            LazyColumn {
-                state.todos.let { todo ->
-                    items(todo!!, key = { it.id }) {
-                        TodoItem(
-                            todo = it,
-                            onCheckedChange = {},
-                            modifier = Modifier.animateItem(
-                                fadeInSpec = null,
-                                fadeOutSpec = null,
-                                placementSpec = spring(
-                                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-
+          Text(
+            text = "No results found for : ${state.query} 😔",
+            fontWeight = FontWeight.Bold,
+          )
         }
+      }
+      LazyColumn {
+        state.todos.let { todo ->
+          items(todo!!, key = { it.id }) {
+            TodoItem(
+              todo = it,
+              onCheckedChange = {},
+              modifier =
+              Modifier.animateItem(
+                fadeInSpec = null,
+                fadeOutSpec = null,
+                placementSpec =
+                spring(
+                  dampingRatio = Spring.DampingRatioMediumBouncy,
+                  stiffness = Spring.StiffnessLow,
+                ),
+              ),
+            )
+          }
+        }
+      }
     }
+  }
 }
-

@@ -12,13 +12,10 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    @Provides
-    fun providesDataStoreRepository(
-        dataStoreRepositoryImpl: DataStoreRepositoryImpl
-    ): IDataStoreRepository = dataStoreRepositoryImpl
+  @Provides
+  fun providesDataStoreRepository(dataStoreRepositoryImpl: DataStoreRepositoryImpl): IDataStoreRepository =
+    dataStoreRepositoryImpl
 
-    @Provides
-    fun providesTodoRepository(
-        todoRepositoryImpl: TodoRepositoryImpl
-    ): ITodoRepository = todoRepositoryImpl
+  @Provides
+  fun providesTodoRepository(todoRepositoryImpl: TodoRepositoryImpl): ITodoRepository = todoRepositoryImpl
 }

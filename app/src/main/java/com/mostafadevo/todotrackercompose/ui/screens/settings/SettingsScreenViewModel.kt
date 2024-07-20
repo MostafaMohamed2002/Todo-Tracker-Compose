@@ -11,38 +11,40 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsScreenViewModel @Inject constructor(
-    private val datastore: IDataStoreRepository
+class SettingsScreenViewModel
+@Inject
+constructor(
+  private val datastore: IDataStoreRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(SettingsScreenUiState())
-    val uiState = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow(SettingsScreenUiState())
+  val uiState = _uiState.asStateFlow()
 
-    init {
+  init {
+    viewModelScope.launch {
+      combine(
+        datastore.isDarkTheme(),
+        datastore.isDynamicColors(),
+      ) { isDarkTheme, isDynamicColors ->
+        SettingsScreenUiState(isDarkTheme = isDarkTheme, isDynamicColors = isDynamicColors)
+      }.collect { newState ->
+        _uiState.value = newState
+      }
+    }
+  }
+
+  fun onEvent(event: SettingsScreenUiEvents) {
+    when (event) {
+      is SettingsScreenUiEvents.ToggleDarkTheme -> {
         viewModelScope.launch {
-            combine(
-                datastore.isDarkTheme(),
-                datastore.isDynamicColors()
-            ) { isDarkTheme, isDynamicColors ->
-                SettingsScreenUiState(isDarkTheme = isDarkTheme, isDynamicColors = isDynamicColors)
-            }.collect { newState ->
-                _uiState.value = newState
-            }
+          datastore.toggleDarkTheme(event.isDarkTheme)
         }
-    }
+      }
 
-    fun onEvent(event: SettingsScreenUiEvents) {
-        when (event) {
-            is SettingsScreenUiEvents.ToggleDarkTheme -> {
-                viewModelScope.launch {
-                    datastore.toggleDarkTheme(event.isDarkTheme)
-                }
-            }
-
-            is SettingsScreenUiEvents.ToggleDynamicColors -> {
-                viewModelScope.launch {
-                    datastore.toggleDynamicColors(event.isDynamicColors)
-                }
-            }
+      is SettingsScreenUiEvents.ToggleDynamicColors -> {
+        viewModelScope.launch {
+          datastore.toggleDynamicColors(event.isDynamicColors)
         }
+      }
     }
+  }
 }

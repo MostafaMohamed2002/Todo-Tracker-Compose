@@ -21,68 +21,64 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeOverFlowMenu(
-    modifier: Modifier = Modifier,
-    expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
-    onSortByTitle: () -> Unit,
-    onSortByPriority: () -> Unit,
-    onDeleteAllTodos: () -> Unit,
+  modifier: Modifier = Modifier,
+  expanded: Boolean,
+  onExpandedChange: (Boolean) -> Unit,
+  onSortByTitle: () -> Unit,
+  onSortByPriority: () -> Unit,
+  onDeleteAllTodos: () -> Unit,
 ) {
+  Row(
+    horizontalArrangement = Arrangement.End,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Box {
+      IconButton(onClick = { onExpandedChange(true) }) {
+        Icon(
+          imageVector = Icons.Default.MoreVert,
+          contentDescription = "sort by",
+          tint = MaterialTheme.colorScheme.onPrimary,
+        )
+      }
 
-    Row(
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-        ) {
-
-            IconButton(onClick = { onExpandedChange(true) }) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "sort by",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { onExpandedChange(false) }
-            ) {
-                DropdownMenuItem(
-                    leadingIcon = {
-                        Icon(
-                            imageVector = rememberTitle(),
-                            contentDescription = "title",
-                            modifier = Modifier.size(16.dp)
-                        )
-                    },
-                    onClick = { onSortByTitle() },
-                    text = { Text("Title", fontSize = 16.sp) }
-                )
-                DropdownMenuItem(
-                    leadingIcon = {
-                        Icon(
-                            imageVector = rememberPriorityHigh(),
-                            contentDescription = "priorityicon",
-                            modifier = Modifier.size(16.dp)
-                        )
-                    },
-                    onClick = { onSortByPriority() },
-                    text = { Text("Priority", fontSize = 16.sp) }
-                )
-                DropdownMenuItem(
-                    text = {
-                        Text(text = "Delete All")
-                    },
-                    onClick = {
-                        onDeleteAllTodos()
-                    },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
-                    }
-                )
-            }
-        }
+      DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { onExpandedChange(false) },
+      ) {
+        DropdownMenuItem(
+          leadingIcon = {
+            Icon(
+              imageVector = rememberTitle(),
+              contentDescription = "title",
+              modifier = Modifier.size(16.dp),
+            )
+          },
+          onClick = { onSortByTitle() },
+          text = { Text("Title", fontSize = 16.sp) },
+        )
+        DropdownMenuItem(
+          leadingIcon = {
+            Icon(
+              imageVector = rememberPriorityHigh(),
+              contentDescription = "priorityicon",
+              modifier = Modifier.size(16.dp),
+            )
+          },
+          onClick = { onSortByPriority() },
+          text = { Text("Priority", fontSize = 16.sp) },
+        )
+        DropdownMenuItem(
+          text = {
+            Text(text = "Delete All")
+          },
+          onClick = {
+            onDeleteAllTodos()
+          },
+          leadingIcon = {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
+          },
+        )
+      }
     }
+  }
 }
-

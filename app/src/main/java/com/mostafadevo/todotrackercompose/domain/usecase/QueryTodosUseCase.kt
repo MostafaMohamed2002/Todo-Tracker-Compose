@@ -6,14 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class QueryTodosUseCase @Inject constructor(
-    private val iTodoRepository: ITodoRepository
+class QueryTodosUseCase
+@Inject
+constructor(
+  private val iTodoRepository: ITodoRepository,
 ) {
-    suspend operator fun invoke(query: String): Flow<List<Todo>> {
-        return iTodoRepository.getTodoItems().map {
-            it.filter {
-                it.title.contains(query)
-            }
-        }
+  suspend operator fun invoke(query: String): Flow<List<Todo>> =
+    iTodoRepository.getTodoItems().map {
+      it.filter {
+        it.title.contains(query)
+      }
     }
 }

@@ -14,19 +14,23 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class OnTaskMarkedAsCompletedReciever : BroadcastReceiver() {
-    @Inject
-    lateinit var useCase: MarkTodoAsCompletedUseCase
-    override fun onReceive(context: Context?, intent: Intent?) {
-        // Handle the task marked as completed
-        val taskId = intent?.getIntExtra("TASK_ID", 0)
-        // Update the task in the database with thread
-        CoroutineScope(Dispatchers.IO).launch {
-            useCase.invoke(taskId!!)
-            withContext(Dispatchers.Main) {
-                val notificationManager =
-                    context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.cancel(taskId!!)
-            }
-        }
+  @Inject
+  lateinit var useCase: MarkTodoAsCompletedUseCase
+
+  override fun onReceive(
+    context: Context?,
+    intent: Intent?,
+  ) {
+    // Handle the task marked as completed
+    val taskId = intent?.getIntExtra("TASK_ID", 0)
+    // Update the task in the database with thread
+    CoroutineScope(Dispatchers.IO).launch {
+      useCase.invoke(taskId!!)
+      withContext(Dispatchers.Main) {
+        val notificationManager =
+          context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(taskId!!)
+      }
     }
+  }
 }

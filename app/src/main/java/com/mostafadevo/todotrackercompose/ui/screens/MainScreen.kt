@@ -10,10 +10,10 @@ import com.mostafadevo.todotrackercompose.ui.BottomNavigationNavGraph
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
-    ) { paddingValues ->
-        BottomNavigationNavGraph(navController = navController, paddingValues)
-    }
+  val navController = rememberNavController()
+  Scaffold(
+    bottomBar = { BottomNavBar(navController = navController) },
+  ) { paddingValues ->
+    BottomNavigationNavGraph(navController = navController, paddingValues)
+  }
 }

@@ -45,137 +45,142 @@ import androidx.compose.ui.window.DialogProperties
 import com.mostafadevo.todotrackercompose.R
 import java.time.LocalTime
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
-    onCancel: () -> Unit,
-    onConfirm: (LocalTime) -> Unit,
-    modifier: Modifier = Modifier,
-    initial: LocalTime? = null,
+  onCancel: () -> Unit,
+  onConfirm: (LocalTime) -> Unit,
+  modifier: Modifier = Modifier,
+  initial: LocalTime? = null,
 ) {
-    var mode: DisplayMode by remember { mutableStateOf(DisplayMode.Picker) }
-    val state: TimePickerState = rememberTimePickerState(
-        initialHour = initial?.hour ?: 0,
-        initialMinute = initial?.minute ?: 0,
+  var mode: DisplayMode by remember { mutableStateOf(DisplayMode.Picker) }
+  val state: TimePickerState =
+    rememberTimePickerState(
+      initialHour = initial?.hour ?: 0,
+      initialMinute = initial?.minute ?: 0,
     )
 
-    fun onConfirmClicked() {
-        val localTime = LocalTime.of(state.hour, state.minute)
-        onConfirm(localTime)
-    }
+  fun onConfirmClicked() {
+    val localTime = LocalTime.of(state.hour, state.minute)
+    onConfirm(localTime)
+  }
 
-    // TimePicker does not provide a default TimePickerDialog, so we use our own PickerDialog:
-    // https://issuetracker.google.com/issues/288311426
-    PickerDialog(
-        modifier = modifier,
-        onDismissRequest = onCancel,
-        title = { Text(stringResource(R.string.time_picker_title)) },
-        buttons = {
-            DisplayModeToggleButton(
-                displayMode = mode,
-                onDisplayModeChange = { mode = it },
-            )
-            Spacer(Modifier.weight(1f))
-            OutlinedButton(onClick = onCancel) {
-                Text(stringResource(R.string.common_button_cancel))
-            }
-            Button(onClick = ::onConfirmClicked) {
-                Text(stringResource(R.string.common_button_ok))
-            }
-        },
-    ) {
-        val contentModifier = Modifier.padding(horizontal = 24.dp)
-        when (mode) {
-            DisplayMode.Picker -> TimePicker(modifier = contentModifier, state = state)
-            DisplayMode.Input -> TimeInput(modifier = contentModifier, state = state)
-        }
+  // TimePicker does not provide a default TimePickerDialog, so we use our own PickerDialog:
+  // https://issuetracker.google.com/issues/288311426
+  PickerDialog(
+    modifier = modifier,
+    onDismissRequest = onCancel,
+    title = { Text(stringResource(R.string.time_picker_title)) },
+    buttons = {
+      DisplayModeToggleButton(
+        displayMode = mode,
+        onDisplayModeChange = { mode = it },
+      )
+      Spacer(Modifier.weight(1f))
+      OutlinedButton(onClick = onCancel) {
+        Text(stringResource(R.string.common_button_cancel))
+      }
+      Button(onClick = ::onConfirmClicked) {
+        Text(stringResource(R.string.common_button_ok))
+      }
+    },
+  ) {
+    val contentModifier = Modifier.padding(horizontal = 24.dp)
+    when (mode) {
+      DisplayMode.Picker -> TimePicker(modifier = contentModifier, state = state)
+      DisplayMode.Input -> TimeInput(modifier = contentModifier, state = state)
     }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DisplayModeToggleButton(
-    displayMode: DisplayMode,
-    onDisplayModeChange: (DisplayMode) -> Unit,
-    modifier: Modifier = Modifier,
+  displayMode: DisplayMode,
+  onDisplayModeChange: (DisplayMode) -> Unit,
+  modifier: Modifier = Modifier,
 ) {
-    when (displayMode) {
-        DisplayMode.Picker -> IconButton(
-            modifier = modifier,
-            onClick = { onDisplayModeChange(DisplayMode.Input) },
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Settings,
-                contentDescription = stringResource(R.string.time_picker_button_select_input_mode),
-            )
-        }
+  when (displayMode) {
+    DisplayMode.Picker ->
+      IconButton(
+        modifier = modifier,
+        onClick = { onDisplayModeChange(DisplayMode.Input) },
+      ) {
+        Icon(
+          imageVector = Icons.Filled.Settings,
+          contentDescription = stringResource(R.string.time_picker_button_select_input_mode),
+        )
+      }
 
-        DisplayMode.Input -> IconButton(
-            modifier = modifier,
-            onClick = { onDisplayModeChange(DisplayMode.Picker) },
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Settings,
-                contentDescription = stringResource(R.string.time_picker_button_select_picker_mode),
-            )
-        }
-    }
+    DisplayMode.Input ->
+      IconButton(
+        modifier = modifier,
+        onClick = { onDisplayModeChange(DisplayMode.Picker) },
+      ) {
+        Icon(
+          imageVector = Icons.Filled.Settings,
+          contentDescription = stringResource(R.string.time_picker_button_select_picker_mode),
+        )
+      }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickerDialog(
-    onDismissRequest: () -> Unit,
-    title: @Composable () -> Unit,
-    buttons: @Composable RowScope.() -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
+  onDismissRequest: () -> Unit,
+  title: @Composable () -> Unit,
+  buttons: @Composable RowScope.() -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable ColumnScope.() -> Unit,
 ) {
-    BasicAlertDialog(
-        modifier = modifier
-            .width(IntrinsicSize.Min)
-            .height(IntrinsicSize.Min),
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+  BasicAlertDialog(
+    modifier =
+    modifier
+      .width(IntrinsicSize.Min)
+      .height(IntrinsicSize.Min),
+    onDismissRequest = onDismissRequest,
+    properties = DialogProperties(usePlatformDefaultWidth = false),
+  ) {
+    Surface(
+      shape = MaterialTheme.shapes.extraLarge,
+      tonalElevation = 6.dp,
     ) {
-        Surface(
-            shape = MaterialTheme.shapes.extraLarge,
-            tonalElevation = 6.dp,
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Title
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
-                    ProvideTextStyle(MaterialTheme.typography.labelLarge) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Start)
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 16.dp, bottom = 20.dp),
-                        ) {
-                            title()
-                        }
-                    }
-                }
-                // Content
-                CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.textContentColor) {
-                    content()
-                }
-                // Buttons
-                CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
-                    ProvideTextStyle(MaterialTheme.typography.labelLarge) {
-                        // TODO This should wrap on small screens, but we can't use AlertDialogFlowRow as it is no public
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp, end = 6.dp, start = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-                        ) {
-                            buttons()
-                        }
-                    }
-                }
+      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Title
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant) {
+          ProvideTextStyle(MaterialTheme.typography.labelLarge) {
+            Box(
+              modifier =
+              Modifier
+                .align(Alignment.Start)
+                .padding(horizontal = 24.dp)
+                .padding(top = 16.dp, bottom = 20.dp),
+            ) {
+              title()
             }
+          }
         }
+        // Content
+        CompositionLocalProvider(LocalContentColor provides AlertDialogDefaults.textContentColor) {
+          content()
+        }
+        // Buttons
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.primary) {
+          ProvideTextStyle(MaterialTheme.typography.labelLarge) {
+            // TODO This should wrap on small screens, but we can't use AlertDialogFlowRow as it is no public
+            Row(
+              modifier =
+              Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp, end = 6.dp, start = 6.dp),
+              horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+            ) {
+              buttons()
+            }
+          }
+        }
+      }
     }
+  }
 }
