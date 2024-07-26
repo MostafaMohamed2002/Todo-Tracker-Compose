@@ -1,13 +1,13 @@
 package com.mostafadevo.todotrackercompose.ui.screens.homescreen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,9 +21,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -137,19 +142,21 @@ fun HomeScreen(
         }
       }
       items(items = uiState.todos, key = { it.id }) { todo ->
-        val isExpanded = remember { mutableStateOf(false) }
-
+        val isTodoExpanded = remember { mutableStateOf(false) }
+        var isDeleteMenuShown = remember { mutableStateOf(false) }
         ElevatedCard(
           modifier =
           Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable(
-              interactionSource = remember { MutableInteractionSource() },
-              indication = null,
-            ) {
-              isExpanded.value = !isExpanded.value
-            }
+            .combinedClickable(
+              onClick = {
+                isTodoExpanded.value = !isTodoExpanded.value
+              },
+              onLongClick = {
+                isDeleteMenuShown.value = true
+              }
+            )
             .animateContentSize()
             .animateItem(
               // customized animations
@@ -165,6 +172,25 @@ fun HomeScreen(
           Row(
             verticalAlignment = Alignment.CenterVertically,
           ) {
+            AnimatedVisibility(isDeleteMenuShown.value) {
+              DropdownMenu(
+                expanded = isDeleteMenuShown.value,
+                onDismissRequest = { isDeleteMenuShown.value = false }
+              ) {
+                DropdownMenuItem(text = {
+                  Row {
+                    Icon(
+                      imageVector = Icons.Default.Delete, contentDescription = null
+                    )
+                    Text(
+                      "DeleteTodo"
+                    )
+                  }
+                }, onClick = {
+                  mViewModel.onEvent(HomeScreenUiEvent.OnDeleteTodo(todo))
+                })
+              }
+            }
             Column(
               modifier =
               Modifier
@@ -172,7 +198,7 @@ fun HomeScreen(
                 .weight(1f),
             ) {
               val animtedMaxLines by animateIntAsState(
-                if (isExpanded.value) 15 else 1,
+                if (isTodoExpanded.value) 15 else 1,
               )
               Timber.d("animtedMaxLines: $animtedMaxLines")
               Text(
@@ -219,6 +245,7 @@ fun HomeScreen(
             }
           }
         }
+
       }
     }
 

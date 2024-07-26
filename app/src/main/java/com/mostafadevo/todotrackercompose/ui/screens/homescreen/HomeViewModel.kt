@@ -238,6 +238,12 @@ constructor(
           alltodos.forEach { deleteTodoUseCase(it) }
         }
       }
+
+      is HomeScreenUiEvent.OnDeleteTodo -> {
+        viewModelScope.launch(Dispatchers.IO) {
+          deleteTodoUseCase(event.todo)
+        }
+      }
     }
   }
 
