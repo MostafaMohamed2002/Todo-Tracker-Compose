@@ -1,5 +1,6 @@
 package com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -148,8 +149,9 @@ fun AddDialog(
             onCheckedChange = { onEvent(AddTodoDialogUiEvents.OnSetAlarmChange(it)) },
           )
         }
-        if (state.isAlarmEnabled) {
+        AnimatedVisibility(state.isAlarmEnabled) {
           OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = "${state.time.hour}:${state.time.minute}",
             onValueChange = {},
             readOnly = true,
@@ -167,7 +169,10 @@ fun AddDialog(
             },
           )
           Spacer(modifier = Modifier.width(16.dp))
+        }
+        AnimatedVisibility(state.isAlarmEnabled) {
           OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = state.date.toFormattedDateString(),
             onValueChange = {},
             readOnly = true,
@@ -186,6 +191,7 @@ fun AddDialog(
             },
           )
         }
+
         // close and save buttons
         Row {
           OutlinedButton(modifier = Modifier.weight(1f), onClick = {
