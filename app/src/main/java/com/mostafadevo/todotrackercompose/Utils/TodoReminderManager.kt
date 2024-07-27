@@ -62,4 +62,30 @@ class TodoReminderManager(
     )
     Timber.d("Reminder set for task: ${todo.id} at ${todo.dueDateTime.extractTime()}")
   }
+
+  fun cancelTodoReminder(todo: Todo) {
+    // Get the AlarmManager service
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    // Create an intent for the MainActivity and add the task's details as extras
+    val intent =
+      Intent(context, TaskReminderBroadCastReciever::class.java).apply {
+        putExtra("TASK_ID", todo.id)
+        putExtra("TASK_TITLE", todo.title)
+        putExtra("TASK_DESCRIPTION", todo.description)
+      }
+
+    // Create a PendingIntent that will broadcast the intent
+    val pendingIntent =
+      PendingIntent.getBroadcast(
+        context,
+        todo.id,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+      )
+
+    // Cancel the alarm
+    alarmManager.cancel(pendingIntent)
+    Timber.d("Reminder cancelled for task: ${todo.id}")
+  }
 }
