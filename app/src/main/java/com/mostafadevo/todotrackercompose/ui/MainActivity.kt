@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mostafadevo.todotrackercompose.Utils.BottomNavigationItem
+import com.mostafadevo.todotrackercompose.Utils.Screens
 import com.mostafadevo.todotrackercompose.ui.screens.MainScreen
 import com.mostafadevo.todotrackercompose.ui.screens.settings.SettingsScreenViewModel
 import com.mostafadevo.todotrackercompose.ui.theme.AppTheme
@@ -137,28 +138,31 @@ fun BottomNavBar(navController: NavHostController) {
       BottomNavigationItem.Search,
       BottomNavigationItem.Setting,
     )
+  val hideNavBarScreens = setOf(Screens.EditScreen)
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination?.route
-  NavigationBar {
-    screens.forEach { item ->
-      NavigationBarItem(
-        selected = item.route == currentDestination,
-        label = { Text(item.title) },
-        icon = {
-          Icon(
-            imageVector = item.icon,
-            contentDescription = item.title,
-          )
-        },
-        onClick = {
-          navController.navigate(item.route) {
-            popUpTo(navController.graph.startDestinationId) { saveState = true }
-            launchSingleTop = true
-            restoreState = true
-          }
-        },
-        alwaysShowLabel = item.route == currentDestination,
-      )
+  if (currentDestination !in hideNavBarScreens) {
+    NavigationBar {
+      screens.forEach { item ->
+        NavigationBarItem(
+          selected = item.route == currentDestination,
+          label = { Text(item.title) },
+          icon = {
+            Icon(
+              imageVector = item.icon,
+              contentDescription = item.title,
+            )
+          },
+          onClick = {
+            navController.navigate(item.route) {
+              popUpTo(navController.graph.startDestinationId) { saveState = true }
+              launchSingleTop = true
+              restoreState = true
+            }
+          },
+          alwaysShowLabel = item.route == currentDestination,
+        )
+      }
     }
   }
 }
