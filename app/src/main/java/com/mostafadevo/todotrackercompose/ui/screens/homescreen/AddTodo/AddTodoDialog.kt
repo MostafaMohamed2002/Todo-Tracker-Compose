@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -70,7 +72,9 @@ fun AddDialog(
       tonalElevation = 8.dp,
     ) {
       Column(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier
+          .padding(16.dp)
+          .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         Text(text = "Add Todo", style = MaterialTheme.typography.bodySmall)
@@ -125,6 +129,7 @@ fun AddDialog(
               DropdownMenuItem(
                 text = { Text(text = it.name) },
                 onClick = {
+                  isPriorityMenuExpanded = false
                   onEvent(AddTodoDialogUiEvents.OnPriorityChange(it))
                 },
                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,

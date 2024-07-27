@@ -6,6 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +19,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -49,10 +52,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.mostafadevo.todotrackercompose.Utils.Screens
+import com.mostafadevo.todotrackercompose.Utils.extractDate
+import com.mostafadevo.todotrackercompose.Utils.extractTime
+import com.mostafadevo.todotrackercompose.Utils.toFormattedDateString
 import com.mostafadevo.todotrackercompose.data.local.Priority
 import com.mostafadevo.todotrackercompose.ui.components.AddTodoFloatingActionButton
 import com.mostafadevo.todotrackercompose.ui.components.TodoTopAppBar
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.AddTodo.AddDialog
+import com.mostafadevo.todotrackercompose.ui.screens.homescreen.edittodoscreen.SharedEditViewModel
 import com.mostafadevo.todotrackercompose.ui.screens.homescreen.todoDetailes.TodoDetailesBottomSheet
 import com.mostafadevo.todotrackercompose.ui.theme.priorityHigh
 import com.mostafadevo.todotrackercompose.ui.theme.priorityLow
@@ -66,6 +75,8 @@ import timber.log.Timber
 fun HomeScreen(
   mViewModel: HomeViewModel = hiltViewModel(),
   paddingValues: PaddingValues,
+  navController: NavHostController,
+  sharedEditViewModel: SharedEditViewModel,
 ) {
   val uiState by mViewModel.homeUiState.collectAsState()
   val addTodoDialogUiState by mViewModel.addTodoDialogUiState.collectAsState()
@@ -189,6 +200,21 @@ fun HomeScreen(
                 }, onClick = {
                   mViewModel.onEvent(HomeScreenUiEvent.OnDeleteTodo(todo))
                 })
+                if (!todo.isCompleted) {
+                  DropdownMenuItem(text = {
+                    Row {
+                      Icon(
+                        imageVector = Icons.Default.Edit, contentDescription = null
+                      )
+                      Text(
+                        "EditTodo"
+                      )
+                    }
+                  }, onClick = {
+                    sharedEditViewModel.setTodo(todo)
+                    navController.navigate(Screens.EditScreen)
+                  })
+                }
               }
             }
             Column(
@@ -198,7 +224,8 @@ fun HomeScreen(
                 .weight(1f),
             ) {
               val animtedMaxLines by animateIntAsState(
-                if (isTodoExpanded.value) 15 else 1,
+                targetValue = if (isTodoExpanded.value) 15 else 1,
+                animationSpec = tween(1500),
               )
               Timber.d("animtedMaxLines: $animtedMaxLines")
               Text(
@@ -209,12 +236,14 @@ fun HomeScreen(
                 maxLines = animtedMaxLines,
               )
               Spacer(modifier = Modifier.height(8.dp))
-              Text(
-                text = todo.title,
-                fontSize = 16.sp,
-                minLines = 1,
-                maxLines = animtedMaxLines,
-              )
+              todo.description.let {
+                Text(
+                  text = it!!,
+                  fontSize = 16.sp,
+                  minLines = 1,
+                  maxLines = animtedMaxLines,
+                )
+              }
               Spacer(modifier = Modifier.height(8.dp))
 
               Text(
@@ -227,6 +256,21 @@ fun HomeScreen(
                   Priority.UNSPECIFIED -> priorityUnspecified
                 },
               )
+
+              // TODO: show the due date if it's not null
+              if (todo.isAlarmEnabled) {
+                Row {
+                  Text(
+                    text = "Due Date: ${todo.dueDateTime.extractDate().toFormattedDateString()}",
+                    fontSize = 12.sp,
+                  )
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Text(
+                    text = "Due Time: ${todo.dueDateTime.extractTime().hour}:${todo.dueDateTime.extractTime().minute}",
+                    fontSize = 12.sp,
+                  )
+                }
+              }
             }
             Column(
               modifier =
@@ -236,12 +280,15 @@ fun HomeScreen(
               horizontalAlignment = Alignment.CenterHorizontally,
               verticalArrangement = Arrangement.Center,
             ) {
-              Checkbox(
-                checked = todo.isCompleted,
-                onCheckedChange = {
-                  mViewModel.onEvent(HomeScreenUiEvent.OnCheckTodo(todo, it))
-                },
-              )
+              //handle when the task is completed user can't check it
+              if (!todo.isCompleted) {
+                Checkbox(
+                  checked = todo.isCompleted,
+                  onCheckedChange = {
+                    mViewModel.onEvent(HomeScreenUiEvent.OnCheckTodo(todo, it))
+                  },
+                )
+              }
             }
           }
         }

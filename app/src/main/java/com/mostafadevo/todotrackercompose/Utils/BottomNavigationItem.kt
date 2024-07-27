@@ -17,3 +17,4 @@ sealed class BottomNavigationItem(
 
   object Search : BottomNavigationItem("search", Icons.Default.Search, "Search")
 }
+

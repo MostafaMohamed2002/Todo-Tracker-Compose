@@ -3,7 +3,6 @@ package com.mostafadevo.todotrackercompose.ui.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
@@ -16,8 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeOverFlowMenu(
@@ -50,22 +47,20 @@ fun HomeOverFlowMenu(
             Icon(
               imageVector = rememberTitle(),
               contentDescription = "title",
-              modifier = Modifier.size(16.dp),
             )
           },
           onClick = { onSortByTitle() },
-          text = { Text("Title", fontSize = 16.sp) },
+          text = { Text("Title") },
         )
         DropdownMenuItem(
           leadingIcon = {
             Icon(
               imageVector = rememberPriorityHigh(),
               contentDescription = "priorityicon",
-              modifier = Modifier.size(16.dp),
             )
           },
           onClick = { onSortByPriority() },
-          text = { Text("Priority", fontSize = 16.sp) },
+          text = { Text("Priority") },
         )
         DropdownMenuItem(
           text = {
@@ -75,7 +70,10 @@ fun HomeOverFlowMenu(
             onDeleteAllTodos()
           },
           leadingIcon = {
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "delete all")
+            Icon(
+              imageVector = Icons.Default.Delete,
+              contentDescription = "delete all",
+            )
           },
         )
       }
