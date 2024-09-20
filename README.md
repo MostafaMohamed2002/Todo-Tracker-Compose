@@ -11,6 +11,11 @@ Todo Tracker is an Android application built with Jetpack Compose that helps use
 - **Bottom Navigation**: Easy navigation between different sections of the app.
 - **Persistent Storage**: Save tasks locally using Room database for persistence across sessions.
 - **Notifications**: Get notified when it's time to complete a task.
+## Video
+
+
+https://github.com/user-attachments/assets/465afb5b-fceb-4493-b263-7e777603fe7e
+
 
 ## Screenshots
 | ![](docs/images/home/img.png)   | ![](docs/images/home/img_1.png) | ![](docs/images/home/img_2.png) |
