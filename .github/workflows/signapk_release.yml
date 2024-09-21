@@ -1,7 +1,7 @@
 name: Release to Amazon Appstore
 
 on:
-  push:
+  
 
 jobs:
   build-and-upload:
