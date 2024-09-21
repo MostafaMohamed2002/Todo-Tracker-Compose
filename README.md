@@ -21,7 +21,7 @@ https://github.com/user-attachments/assets/465afb5b-fceb-4493-b263-7e777603fe7e
 | ![](docs/images/home/img.png)   | ![](docs/images/home/img_1.png) | ![](docs/images/home/img_2.png) |
 |---------------------------------|---------------------------------|-|
 | ![](docs/images/home/img_3.png) | ![](docs/images/home/img_4.png) | ![](docs/images/home/img_5.png) |
-| ![](docs/images/home/img_6.png) |
+| ![](docs/images/home/img_6.png) |![edit screen](docs/images/Screenshot_2024-09-21-00-39-17-10_0ad642d19f2ac003cc668ef14ab3090d.jpg)
 
 |![](docs/images/search_feature/img.png)|![](docs/images/search_feature/img_1.png)|
 |-----|------|
