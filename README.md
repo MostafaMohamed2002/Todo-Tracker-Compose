@@ -1,4 +1,4 @@
-# Todo Tracker - Compose
+# Todose
 
 Todo Tracker is an Android application built with Jetpack Compose that helps users manage their tasks efficiently. The app includes features for adding, updating, deleting, and marking tasks as completed.
 
